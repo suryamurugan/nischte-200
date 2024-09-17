@@ -17,10 +17,10 @@ export const order = async (req, res) => {
     const savedOrder = await order.save();
 
     const orderedItems = {
-      orderId: savedOrder._id, // Reference to the saved order
+      orderId: savedOrder._id,
       items: items.map((item) => ({
-        itemId: item.itemId, // Item ID from the incoming data
-        quantity: item.quantity || 1, // Optional quantity; default to 1 if not provided
+        itemId: item.itemId,
+        quantity: item.quantity || 1,
       })),
     };
 
