@@ -1,5 +1,7 @@
 ## User Management
 
+> User management might not be followed since we are using other service⬇️.
+
 - POST `/register`: To allow users and shop owners to register with the system. The request should include user details (name, email, password, and role - user or owner).
 - POST `/login`: For authentication purposes. It will validate user credentials and return a token for further requests.
 - GET `/profile`: Fetch user or shop owner profile details.
@@ -29,13 +31,18 @@
 - POST `/orders`: Allows a user to place an order. It will include the user’s ID, shop ID, menu item IDs, quantities, and delivery/pickup preferences.
 - GET `/orders/past/:userId`: Retrieves a list of past orders for a specific user.
 - GET `/orders/:orderId`: View the details of a specific order.
-- PUT `/orders/:orderId/cancel` : Allows a user to cancel an order before it is prepared.
-- GET /`orders/queue/:shopId`: This endpoint streams the current queue of orders for a shop, allowing both the owner and users to see the real-time queue.
+- DELETE `/order/:orderId`: deletes the particular order.
+  > Need to be Implemented if requiered.⬇️
+- GET `/orders/queue/:shopId`: This endpoint streams the current queue of orders for a shop, allowing both the owner and users to see the real-time queue.
+
+> Payment Mgmt need to be implemented⬇️
 
 ## Payment Management
 
 - POST `/payments`: Allows a user to pay for their order. This should integrate with a payment gateway to handle actual payments.
 - GET `/payments/:userId`: Fetch payment history for a specific user.
+
+> Reviews & rating Need to be implemented⬇️
 
 ## Reviews & Ratings
 
