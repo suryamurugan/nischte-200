@@ -20,10 +20,7 @@ export const createMenu = async (req, res) => {
     const checkForShop = await Shop.findById(shopId);
 
     if (!checkForShop) {
-      return res.status(404).json({
-        message: "Shop doesn't exist",
-        error: error.message,
-      });
+      throw new Error("Shop doesn't exists");
     }
 
     const checkForItemNameExist = await Menu.findOne({
@@ -32,10 +29,7 @@ export const createMenu = async (req, res) => {
     });
 
     if (checkForItemNameExist) {
-      return res.status(400).json({
-        message: "Item with the name already exist",
-        error: error.message,
-      });
+      throw new Error("Item name already exists");
     }
 
     const savedMenu = await menu.save();
@@ -93,23 +87,18 @@ export const updateMenu = async (req, res) => {
     const checkForShop = await Shop.findById(shopId);
 
     if (!checkForShop) {
-      return res.status(404).json({
-        message: "Shop doesn't exist",
-        error: error.message,
-      });
+      throw new Error("Shop doesn't exists");
     }
 
     const { itemName } = req.body;
     const checkForItemNameExist = await Menu.findOne({
       shopId,
       itemName,
+      _id: { $ne: menuId },
     });
 
     if (checkForItemNameExist) {
-      return res.status(400).json({
-        message: "Item with the name already exist",
-        error: error.message,
-      });
+      throw new Error("Item name already exists");
     }
 
     const updatedMenu = await Menu.findByIdAndUpdate(
@@ -121,6 +110,11 @@ export const updateMenu = async (req, res) => {
         new: true,
       }
     );
+
+    if (!updatedMenu) {
+      throw new Error("Menu item not found while updating!");
+    }
+
     res.status(200).json(updatedMenu);
   } catch (error) {
     res.status(500).json({
