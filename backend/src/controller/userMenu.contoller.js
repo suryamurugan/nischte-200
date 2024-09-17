@@ -16,7 +16,6 @@ export const getAllAvaiableShops = async (req, res) => {
 export const getMenuOfAShop = async (req, res) => {
   try {
     const shopId = req.params.shopId;
-    // console.log("shop id", shopId);
     const menu = await Menu.find({ shopId });
     res.status(200).json(menu);
   } catch (error) {

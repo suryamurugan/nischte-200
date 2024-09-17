@@ -1,6 +1,7 @@
 // This menu controller is for shop owner
 
 import { Menu } from "../models/menu.models.js";
+import { Shop } from "../models/shop.model.js";
 
 export const createMenu = async (req, res) => {
   try {
@@ -22,6 +23,16 @@ export const createMenu = async (req, res) => {
       shopId,
       offerId,
     });
+
+    const checkForShop = await Shop.findById(shopId);
+
+    if (!checkForShop) {
+      return res.status(404).json({
+        message: "Shop doesn't exist",
+        error: error.message,
+      });
+    }
+
     const savedMenu = await menu.save();
     res.status(200).json(savedMenu);
   } catch (error) {
@@ -49,7 +60,6 @@ export const getMenu = async (req, res) => {
 export const getAllMenuOfShop = async (req, res) => {
   try {
     const shopId = req.params.shopId;
-    // console.log("Shop id", shopId);
     const menu = await Menu.find({
       shopId,
     });
