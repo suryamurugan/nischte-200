@@ -16,12 +16,22 @@ export const order = async (req, res) => {
 
     const savedOrder = await order.save();
 
-    const orderedItems = items.map((item) => ({
-      orderId: savedOrder?._id,
-      itemId: item.itemId, //[check]: Might not work, check during integration
-    }));
+    const orderedItems = {
+      orderId: savedOrder._id, // Reference to the saved order
+      items: items.map((item) => ({
+        itemId: item.itemId, // Item ID from the incoming data
+        quantity: item.quantity || 1, // Optional quantity; default to 1 if not provided
+      })),
+    };
 
-    await Ordered.insertMany(orderedItems);
+    try {
+      await Ordered.insertMany(orderedItems);
+    } catch (insertError) {
+      return res.status(500).json({
+        message: "Failed to insert ordered items",
+        error: insertError.message,
+      });
+    }
 
     res.status(200).json(savedOrder);
   } catch (error) {

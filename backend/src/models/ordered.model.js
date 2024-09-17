@@ -7,11 +7,20 @@ const orderedSchema = new Schema(
       ref: "Order",
       required: true,
     },
-    itemId: {
-      type: Schema.Types.ObjectId,
-      ref: "Menu",
-      required: true,
-    },
+    items: [
+      {
+        itemId: {
+          type: Schema.Types.ObjectId,
+          ref: "Menu",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
