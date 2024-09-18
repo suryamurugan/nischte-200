@@ -7,14 +7,26 @@ const offerSchema = new Schema(
       ref: "Shop",
       required: true,
     },
+    itemId: {
+      type: Schema.Types.ObjectId,
+      ref: "Shop",
+      required: true,
+    },
+    offerType: {
+      type: String,
+      enum: ["Flat Discount", "Buy One Get One Free", "Special Occasion"],
+      required: true,
+    },
+    offerDescription: {
+      type: String,
+      trim: true,
+      required: true,
+    },
     discountRate: {
       type: Number,
-      min: [0, "Discount rate cannot be less than 0"],
-      max: [100, "Discount rate cannot exceed 100"],
     },
     minOrderAmt: {
       type: Number,
-      min: [0, "Minimum order amount must be a positive number"],
     },
   },
   { timestamps: true }
