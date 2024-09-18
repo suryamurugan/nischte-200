@@ -14,7 +14,13 @@ const offerSchema = new Schema(
     },
     offerType: {
       type: String,
-      enum: ["Flat Discount", "Buy One Get One Free", "Special Occasion"],
+      enum: [
+        "Flat Discount",
+        "Buy One Get One Free",
+        "Special Occasion",
+        "Complimentary",
+        "Discount dishes",
+      ],
       required: true,
     },
     offerDescription: {
