@@ -27,7 +27,7 @@ const offerDescriptionSchema = new Schema({
   },
   numberOfVisits: {
     type: Number,
-    required: true,
+    default: 0,
   },
   description: {
     type: String,

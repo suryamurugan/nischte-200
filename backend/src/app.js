@@ -14,13 +14,13 @@ app.use(cookieParser());
 // Route Dec
 
 import shopRouter from "../src/routes/shop.route.js";
-import menuRouter from "../src/routes/menu.route.js";
+import shopMenuRouter from "../src/routes/menu.route.js";
 import userMenuViewRouter from "../src/routes/userMenu.route.js";
 import orderRouter from "../src/routes/order.route.js";
 import offerRouter from "../src/routes/offer.route.js";
 
 app.use("/api/v1/shop", shopRouter);
-app.use("/api/v1/shops", menuRouter);
+app.use("/api/v1/shop", shopMenuRouter);
 app.use("/api/v1/shops", userMenuViewRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/offer", offerRouter);

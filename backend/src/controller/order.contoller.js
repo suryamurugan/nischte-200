@@ -3,35 +3,20 @@ import { Ordered } from "../models/ordered.model.js";
 
 export const order = async (req, res) => {
   try {
-    const { userId, deliveryId, totalAmt, offerId, transactionId, items } =
+    const { userId, deliveryStatus, totalAmt, offerId, transactionId, items } =
       req.body;
 
     const order = new Order({
       userId,
-      deliveryId,
+      deliveryStatus,
       totalAmt,
       offerId,
+      items,
       transactionId,
+      offerId,
     });
 
     const savedOrder = await order.save();
-
-    const orderedItems = {
-      orderId: savedOrder._id,
-      items: items.map((item) => ({
-        itemId: item.itemId,
-        quantity: item.quantity || 1,
-      })),
-    };
-
-    try {
-      await Ordered.insertMany(orderedItems);
-    } catch (insertError) {
-      return res.status(500).json({
-        message: "Failed to insert ordered items",
-        error: insertError.message,
-      });
-    }
 
     res.status(200).json(savedOrder);
   } catch (error) {
