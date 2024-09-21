@@ -12,11 +12,9 @@ const offerTypeSchema = new Schema({
 const offerDescriptionSchema = new Schema({
   discountRate: {
     type: Number,
-    required: true,
   },
   minOrder: {
     type: Number,
-    required: true,
   },
   plusOffers: {
     type: Number,
@@ -55,6 +53,10 @@ const offerSchema = new Schema(
     },
     offerDescription: {
       type: offerDescriptionSchema,
+      required: true,
+    },
+    _isActive: {
+      type: Boolean,
       required: true,
     },
   },

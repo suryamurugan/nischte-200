@@ -2,9 +2,9 @@ import { Offer } from "../models/offer.model.js";
 
 export const createOffer = async (req, res) => {
   try {
-    const { shopId, itemId, offerType, offerDescription } = req.body;
+    const { shopId, itemId, offerType, offerDescription, _isActive } = req.body;
 
-    if (!shopId || !itemId || !offerType || !offerDescription) {
+    if (!shopId || !itemId || !offerType || !offerDescription || !_isActive) {
       return res.status(400).json({
         message:
           "shopId, itemId, offerType, and offerDescription are required.",
@@ -16,6 +16,7 @@ export const createOffer = async (req, res) => {
       itemId,
       offerType,
       offerDescription,
+      _isActive,
     });
 
     const savedNewOffer = await newOffer.save();
@@ -35,6 +36,7 @@ export const getAllOffers = async (req, res) => {
     const offers = await Offer.find({
       shopId,
       itemId,
+      _isActive: true,
     });
     res.status(200).json({
       message: "Offers retrieved successfully",
@@ -70,7 +72,7 @@ export const getSpecificOfferDetails = async (req, res) => {
 
 export const updateOffer = async (req, res) => {
   try {
-    const { shopId, itemId, offerType, offerDescription } = req.body;
+    const { shopId, itemId, offerType, offerDescription, _isActive } = req.body;
 
     const updatedOffer = await Offer.findByIdAndUpdate(
       req.params.id,
@@ -79,6 +81,7 @@ export const updateOffer = async (req, res) => {
         itemId,
         offerType,
         offerDescription,
+        _isActive,
       },
       { new: true, runValidators: true }
     );
