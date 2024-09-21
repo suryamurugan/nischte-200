@@ -1,4 +1,41 @@
-import mongoose, { Schema, model } from "mongoose";
+const offerTypeSchema = new Schema({
+  // Taught of adding some index/field, but need to check for near future use-cases...
+  name: {
+    type: String,
+    required: true,
+    enums: [
+      "Flat-Discount, Plus-Offer, Special-Offer, Complimentary, Discount-Dishes",
+    ],
+  },
+});
+
+const offerDescriptionSchema = new Schema({
+  discountRate: {
+    type: Number,
+    required: true,
+  },
+  minOrder: {
+    type: Number,
+    required: true,
+  },
+  plusOffers: {
+    type: Number,
+  },
+  specialOccasionDate: {
+    type: Date,
+  },
+  discountDishes: {
+    type: [String],
+  },
+  numberOfVisits: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
 
 const offerSchema = new Schema(
   {
@@ -9,30 +46,16 @@ const offerSchema = new Schema(
     },
     itemId: {
       type: Schema.Types.ObjectId,
-      ref: "Shop",
+      ref: "Item",
       required: true,
     },
     offerType: {
-      type: String,
-      enum: [
-        "Flat Discount",
-        "Buy One Get One Free",
-        "Special Occasion",
-        "Complimentary",
-        "Discount dishes",
-      ],
+      type: offerTypeSchema,
       required: true,
     },
     offerDescription: {
-      type: String,
-      trim: true,
+      type: offerDescriptionSchema,
       required: true,
-    },
-    discountRate: {
-      type: Number,
-    },
-    minOrderAmt: {
-      type: Number,
     },
   },
   { timestamps: true }

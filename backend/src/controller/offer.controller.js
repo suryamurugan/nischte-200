@@ -2,14 +2,7 @@ import { Offer } from "../models/offer.model.js";
 
 export const createOffer = async (req, res) => {
   try {
-    const {
-      shopId,
-      itemId,
-      offerType,
-      offerDescription,
-      discountRate,
-      minOrderAmt,
-    } = req.body;
+    const { shopId, itemId, offerType, offerDescription } = req.body;
 
     if (!shopId || !itemId || !offerType || !offerDescription) {
       return res.status(400).json({
@@ -23,8 +16,6 @@ export const createOffer = async (req, res) => {
       itemId,
       offerType,
       offerDescription,
-      discountRate,
-      minOrderAmt,
     });
 
     const savedNewOffer = await newOffer.save();
@@ -79,14 +70,7 @@ export const getSpecificOfferDetails = async (req, res) => {
 
 export const updateOffer = async (req, res) => {
   try {
-    const {
-      shopId,
-      itemId,
-      offerType,
-      offerDescription,
-      discountRate,
-      minOrderAmt,
-    } = req.body;
+    const { shopId, itemId, offerType, offerDescription } = req.body;
 
     const updatedOffer = await Offer.findByIdAndUpdate(
       req.params.id,
@@ -95,8 +79,6 @@ export const updateOffer = async (req, res) => {
         itemId,
         offerType,
         offerDescription,
-        discountRate,
-        minOrderAmt,
       },
       { new: true, runValidators: true }
     );

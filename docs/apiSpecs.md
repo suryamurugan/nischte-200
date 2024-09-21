@@ -11,14 +11,14 @@
 
 - POST `/shops` : Allows a shop owner to create a shop and provide details like shop name, address, description, and contact info.
 - GET `/shops/:shopId` : Fetch all shops associated with a particular owner.
-- PUT `/shops/:shopId` : Allows shop owners to update the shop details (name, address, etc.).
+- PATCH `/shops/:shopId` : Allows shop owners to update the shop details (name, address, etc.).
 - DELETE `/shops/:shopId` : Allows shop owners to delete their shop.
 
 ## Menu Management(for shop owner)
 
 - POST `/shops/:shopId/menu` : Allows a shop owner to create a menu for a particular shop. This will include menu items, prices, and descriptions.
 - GET `/shops/:shopId/menu` : Retrieve the menu for a specific shop.
-- PUT `/shops/:shopId/menu/` :menuItemId: Allows shop owners to update details of a specific menu item.
+- PATCH `/shops/:shopId/menu/` :menuItemId: Allows shop owners to update details of a specific menu item.
 - DELETE `/shops/:shopId/menu/:menuItemId` : Allows shop owners to delete a specific item from the menu.
 
 ## Viewing Shops & Menus(For user)
@@ -34,6 +34,14 @@
 - DELETE `/order/:orderId`: deletes the particular order.
   > Need to be Implemented if requiered.⬇️
 - GET `/orders/queue/:shopId`: This endpoint streams the current queue of orders for a shop, allowing both the owner and users to see the real-time queue.
+
+## Offer Management
+
+- POST `/api/v1/offer`: Create a new offer. Requires shop ID, item ID, offer type, description, discount rate, and minimum order amount.
+- GET `/api/v1/offer/:shopId/:itemId`: Retrieve all offers for a specific shop and item.
+- GET `/api/v1/offer/:id`: Get details of a specific offer by ID.
+- PATCH `/api/v1/offer/:id`: Update a specific offer by ID.
+- DELETE `/api/v1/offer/:id`: Delete a specific offer by ID.
 
 > Payment Mgmt need to be implemented⬇️
 
