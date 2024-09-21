@@ -18,7 +18,7 @@ const menuSchema = new Schema(
       required: [true, "Make sure to add the item price"],
     },
     category: {
-      type: String,
+      type: [String],
       required: [true, "Make sure to add the category for-eg:[Veg, Non-veg]"],
     },
     picture: {

@@ -4,25 +4,51 @@ export const createOffer = async (req, res) => {
   try {
     const { shopId, itemId, offerType, offerDescription, _isActive } = req.body;
 
-    if (!shopId || !itemId || !offerType || !offerDescription || !_isActive) {
-      return res.status(400).json({
-        message:
-          "shopId, itemId, offerType, and offerDescription are required.",
+    let isOfferExist = await Offer.findOne({ shopId, itemId });
+
+    if (isOfferExist) {
+      isOfferExist.offers.push({
+        offerType: { name: offerType.name },
+        offerDescription: {
+          discountRate: offerDescription.discountRate,
+          minOrder: offerDescription.minOrder,
+          plusOffers: offerDescription.plusOffers,
+          specialOccasionDate: offerDescription.specialOccasionDate,
+          discountDishes: offerDescription.discountDishes,
+          numberOfVisits: offerDescription.numberOfVisits,
+          description: offerDescription.description,
+        },
+        _isActive,
       });
+
+      const updatedOffer = await isOfferExist.save();
+      return res.status(200).json(updatedOffer);
+    } else {
+      const newOffer = new Offer({
+        shopId,
+        itemId,
+        offers: [
+          {
+            offerType: { name: offerType.name },
+            offerDescription: {
+              discountRate: offerDescription.discountRate,
+              minOrder: offerDescription.minOrder,
+              plusOffers: offerDescription.plusOffers,
+              specialOccasionDate: offerDescription.specialOccasionDate,
+              discountDishes: offerDescription.discountDishes,
+              numberOfVisits: offerDescription.numberOfVisits,
+              description: offerDescription.description,
+            },
+            _isActive,
+          },
+        ],
+      });
+
+      const savedNewOffer = await newOffer.save();
+      return res.status(201).json(savedNewOffer);
     }
-
-    const newOffer = new Offer({
-      shopId,
-      itemId,
-      offerType,
-      offerDescription,
-      _isActive,
-    });
-
-    const savedNewOffer = await newOffer.save();
-    res.status(201).json(savedNewOffer);
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Not able to create offer",
       error: error.message,
     });
@@ -36,7 +62,7 @@ export const getAllOffers = async (req, res) => {
     const offers = await Offer.find({
       shopId,
       itemId,
-      _isActive: true,
+      "offers._isActive": true,
     });
     res.status(200).json({
       message: "Offers retrieved successfully",
@@ -52,7 +78,12 @@ export const getAllOffers = async (req, res) => {
 
 export const getSpecificOfferDetails = async (req, res) => {
   try {
-    const offer = await Offer.findById(req.params.id);
+    const offer = await Offer.find(
+      {
+        "offers._id": req.params.id,
+      },
+      { "offers.$": 1 }
+    );
     if (!offer) {
       return res.status(404).json({
         message: "Offer not found",
@@ -72,26 +103,33 @@ export const getSpecificOfferDetails = async (req, res) => {
 
 export const updateOffer = async (req, res) => {
   try {
-    const { shopId, itemId, offerType, offerDescription, _isActive } = req.body;
+    const { offerType, offerDescription, _isActive } = req.body;
+    const offer = await Offer.findById(req.params.id);
 
-    const updatedOffer = await Offer.findByIdAndUpdate(
-      req.params.id,
-      {
-        shopId,
-        itemId,
-        offerType,
-        offerDescription,
-        _isActive,
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedOffer) {
-      return res.status(404).json({
-        message: "Offer not found",
-      });
+    if (!offer) {
+      throw new Error("Offer not found!");
     }
 
+    const offerToBeUpdated = offer.offers.find(
+      (offer) => offer.offerType.name === offerType
+    );
+
+    if (!offerToBeUpdated) {
+      throw new Error("There is no offer that exists!");
+    }
+
+    offerToBeUpdated.offerDescription = {
+      discountRate: offerDescription.discountRate,
+      minOrder: offerDescription.minOrder,
+      plusOffers: offerDescription.plusOffers,
+      specialOccasionDate: offerDescription.specialOccasionDate,
+      discountDishes: offerDescription.discountDishes,
+      numberOfVisits: offerDescription.numberOfVisits,
+      description: offerDescription.description,
+    };
+    offerToBeUpdated._isActive = _isActive;
+
+    const updatedOffer = await offer.save();
     res.status(200).json({
       message: "Offer updated successfully",
       offer: updatedOffer,
@@ -106,9 +144,16 @@ export const updateOffer = async (req, res) => {
 
 export const deleteOffer = async (req, res) => {
   try {
-    const offer = await Offer.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    const { shopId, itemId } = req.body;
 
-    if (!offer) {
+    const updatedOffer = await Offer.findOneAndUpdate(
+      { shopId, itemId },
+      { $pull: { offers: { _id: id } } },
+      { new: true }
+    );
+
+    if (!updatedOffer) {
       return res.status(404).json({
         message: "Offer not found",
       });

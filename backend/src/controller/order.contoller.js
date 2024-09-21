@@ -1,5 +1,4 @@
 import { Order } from "../models/order.model.js";
-import { Ordered } from "../models/ordered.model.js";
 
 export const order = async (req, res) => {
   try {
@@ -56,8 +55,6 @@ export const getSpecificOrderDetails = async (req, res) => {
 export const deleteOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-
-    await Ordered.deleteMany({ orderId });
     const deletedOrder = await Order.findByIdAndDelete(orderId);
 
     if (!deletedOrder) {

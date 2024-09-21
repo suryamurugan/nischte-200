@@ -1,10 +1,16 @@
+import mongoose, { Schema, model } from "mongoose";
+
 const offerTypeSchema = new Schema({
   // Taught of adding some index/field, but need to check for near future use-cases...
   name: {
     type: String,
-    required: true,
-    enums: [
-      "Flat-Discount, Plus-Offer, Special-Offer, Complimentary, Discount-Dishes",
+    required: [true, "Make sure to add the offer type"],
+    enum: [
+      "Flat-Discount",
+      "Plus-Offer",
+      "Special-Offer",
+      "Complimentary",
+      "Discount-Dishes",
     ],
   },
 });
@@ -24,6 +30,7 @@ const offerDescriptionSchema = new Schema({
   },
   discountDishes: {
     type: [String],
+    default: undefined,
   },
   numberOfVisits: {
     type: Number,
@@ -40,25 +47,29 @@ const offerSchema = new Schema(
     shopId: {
       type: Schema.Types.ObjectId,
       ref: "Shop",
-      required: true,
+      required: [true, "Make sure to add the shop"],
     },
     itemId: {
       type: Schema.Types.ObjectId,
       ref: "Item",
-      required: true,
+      required: [true, "Make sure to add the item"],
     },
-    offerType: {
-      type: offerTypeSchema,
-      required: true,
-    },
-    offerDescription: {
-      type: offerDescriptionSchema,
-      required: true,
-    },
-    _isActive: {
-      type: Boolean,
-      required: true,
-    },
+    offers: [
+      {
+        offerType: {
+          type: offerTypeSchema,
+          required: [true, "Make sure to add the offer-type"],
+        },
+        offerDescription: {
+          type: offerDescriptionSchema,
+          required: [true, "Make sure to add the description"],
+        },
+        _isActive: {
+          type: Boolean,
+          required: [true, "Make sure to add how long the offer would remain"],
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
