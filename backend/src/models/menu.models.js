@@ -30,10 +30,12 @@ const menuSchema = new Schema(
           type: String,
           required: [true, "Make sure to add the item picture"],
         },
-        offerId: {
-          type: Schema.Types.ObjectId,
-          ref: "Offer",
-        },
+        offerId: [
+          {
+            type: Schema.Types.ObjectId,
+            ref: "Offer",
+          },
+        ],
       },
     ],
     shopId: {

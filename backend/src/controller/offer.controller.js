@@ -24,6 +24,12 @@ export const createOffer = async (req, res) => {
 
       const updatedOffer = await isOfferExist.save();
       const offerId = updatedOffer._id;
+
+      await Menu.updateOne(
+        { shopId, "items._id": itemId },
+        { $push: { "items.$.offerId": offerId } }
+      );
+
       return res.status(200).json(updatedOffer);
     } else {
       const newOffer = new Offer({
@@ -49,17 +55,11 @@ export const createOffer = async (req, res) => {
       const savedNewOffer = await newOffer.save();
       const offerId = savedNewOffer._id;
 
-      await Menu.findOneAndUpdate(
-        {
-          shopId,
-          _id: itemId,
-        },
-        {
-          $set: {
-            offerId,
-          },
-        }
+      await Menu.updateOne(
+        { shopId, "items._id": itemId },
+        { $push: { "items.$.offerId": offerId } }
       );
+
       return res.status(201).json(savedNewOffer);
     }
   } catch (error) {
@@ -119,14 +119,17 @@ export const getSpecificOfferDetails = async (req, res) => {
 export const updateOffer = async (req, res) => {
   try {
     const { offerType, offerDescription, _isActive } = req.body;
-    const offer = await Offer.findById(req.params.id);
+    const offerId = req.params.id;
+    const offer = await Offer.findOne({
+      "offers._id": offerId,
+    });
 
     if (!offer) {
       throw new Error("Offer not found!");
     }
 
     const offerToBeUpdated = offer.offers.find(
-      (offer) => offer.offerType.name === offerType
+      (offer) => offer._id.toString() === offerId
     );
 
     if (!offerToBeUpdated) {
@@ -145,6 +148,7 @@ export const updateOffer = async (req, res) => {
     offerToBeUpdated._isActive = _isActive;
 
     const updatedOffer = await offer.save();
+
     res.status(200).json({
       message: "Offer updated successfully",
       offer: updatedOffer,
@@ -173,6 +177,18 @@ export const deleteOffer = async (req, res) => {
         message: "Offer not found",
       });
     }
+
+    await Menu.updateOne(
+      {
+        shopId,
+        "items._id": itemId,
+      },
+      {
+        $pull: {
+          "items.$.offerId": id,
+        },
+      }
+    );
 
     res.status(200).json({
       message: "Offer deleted successfully",
