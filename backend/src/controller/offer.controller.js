@@ -1,3 +1,4 @@
+import { Menu } from "../models/menu.models.js";
 import { Offer } from "../models/offer.model.js";
 
 export const createOffer = async (req, res) => {
@@ -22,6 +23,7 @@ export const createOffer = async (req, res) => {
       });
 
       const updatedOffer = await isOfferExist.save();
+      const offerId = updatedOffer._id;
       return res.status(200).json(updatedOffer);
     } else {
       const newOffer = new Offer({
@@ -45,6 +47,19 @@ export const createOffer = async (req, res) => {
       });
 
       const savedNewOffer = await newOffer.save();
+      const offerId = savedNewOffer._id;
+
+      await Menu.findOneAndUpdate(
+        {
+          shopId,
+          _id: itemId,
+        },
+        {
+          $set: {
+            offerId,
+          },
+        }
+      );
       return res.status(201).json(savedNewOffer);
     }
   } catch (error) {

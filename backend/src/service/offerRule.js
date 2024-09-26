@@ -1,4 +1,4 @@
-const { Engine } = require("json-rules-engine");
+import { Engine } from "json-rules-engine";
 
 const validateOffer = (offer) => {
   const errors = [];
