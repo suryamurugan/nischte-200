@@ -8,7 +8,7 @@ export const createOffer = async (req, res) => {
     let isOfferExist = await Offer.findOne({ shopId, itemId });
 
     if (isOfferExist) {
-      isOfferExist.offers.push({
+      const newOffer = {
         offerType: { name: offerType.name },
         offerDescription: {
           discountRate: offerDescription.discountRate,
@@ -20,19 +20,21 @@ export const createOffer = async (req, res) => {
           description: offerDescription.description,
         },
         _isActive,
-      });
+      };
 
-      const updatedOffer = await isOfferExist.save();
-      const offerId = updatedOffer._id;
+      isOfferExist.offers.push(newOffer);
+      const savedOffer = await isOfferExist.save();
+      const newSubDocumentId =
+        savedOffer.offers[savedOffer.offers.length - 1]._id;
 
       await Menu.updateOne(
         { shopId, "items._id": itemId },
-        { $push: { "items.$.offerId": offerId } }
+        { $push: { "items.$.offerId": newSubDocumentId } }
       );
 
-      return res.status(200).json(updatedOffer);
+      return res.status(200).json(savedOffer);
     } else {
-      const newOffer = new Offer({
+      const newOfferDocument = new Offer({
         shopId,
         itemId,
         offers: [
@@ -52,12 +54,12 @@ export const createOffer = async (req, res) => {
         ],
       });
 
-      const savedNewOffer = await newOffer.save();
-      const offerId = savedNewOffer._id;
+      const savedNewOffer = await newOfferDocument.save();
+      const newSubDocumentId = savedNewOffer.offers[0]._id;
 
       await Menu.updateOne(
         { shopId, "items._id": itemId },
-        { $push: { "items.$.offerId": offerId } }
+        { $push: { "items.$.offerId": newSubDocumentId } }
       );
 
       return res.status(201).json(savedNewOffer);

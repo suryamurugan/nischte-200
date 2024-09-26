@@ -17,7 +17,7 @@ const validateOffer = (offer) => {
   return errors.length ? errors : null;
 };
 
-const createOfferRules = (offer) => {
+const createOfferRules = (offer, visitCount) => {
   const engine = new Engine();
 
   /* Flat-discount */
@@ -40,7 +40,7 @@ const createOfferRules = (offer) => {
           fact: "offer",
           path: ".offerDescription.numberOfVisits",
           operator: "greaterThanInclusive",
-          value: offer.offerDescription.numberOfVisits || 0,
+          value: visitCount,
         },
       ],
     },
@@ -73,7 +73,7 @@ const createOfferRules = (offer) => {
           fact: "offer",
           path: ".offerDescription.numberOfVisits",
           operator: "greaterThanInclusive",
-          value: offer.offerDescription.numberOfVisits || 0,
+          value: visitCount,
         },
       ],
     },
@@ -106,7 +106,7 @@ const createOfferRules = (offer) => {
           fact: "offer",
           path: ".offerDescription.numberOfVisits",
           operator: "greaterThanInclusive",
-          value: offer.offerDescription.numberOfVisits || 0,
+          value: visitCount,
         },
       ],
     },
@@ -133,7 +133,7 @@ const createOfferRules = (offer) => {
           fact: "offer",
           path: ".offerDescription.numberOfVisits",
           operator: "greaterThanInclusive",
-          value: offer.offerDescription.numberOfVisits || 0,
+          value: visitCount,
         },
       ],
     },
@@ -165,7 +165,7 @@ const createOfferRules = (offer) => {
           fact: "offer",
           path: ".offerDescription.numberOfVisits",
           operator: "greaterThanInclusive",
-          value: offer.offerDescription.numberOfVisits || 0,
+          value: visitCount,
         },
       ],
     },
@@ -181,13 +181,13 @@ const createOfferRules = (offer) => {
   return engine;
 };
 
-const executeOfferRules = async (offer) => {
+export const executeOfferRules = async (offer, visitCount) => {
   const validationError = validateOffer(offer);
   if (validationError) {
     return { success: false, errors: validationError };
   }
 
-  const engine = createOfferRules(offer);
+  const engine = createOfferRules(offer, visitCount);
   const facts = { offer };
   const results = await engine.run(facts);
 
@@ -195,8 +195,6 @@ const executeOfferRules = async (offer) => {
 
   if (results.events.length) {
     results.events.forEach((event) => {
-      // console.log(event.params.message);
-
       if (event.type === "Flat-Discount") {
         appliedOffers.push({
           type: "Flat-Discount",
@@ -226,16 +224,8 @@ const executeOfferRules = async (offer) => {
     return { success: true, appliedOffers };
   } else {
     return {
-      success: false,
-      message: "No applicable offer found for the item.",
+      success: true,
+      appliedOffers: [],
     };
   }
 };
-
-executeOfferRules(offer).then((result) => {
-  if (result.success) {
-    return result;
-  } else {
-    console.log("Errors:", result.errors || result.message);
-  }
-});
