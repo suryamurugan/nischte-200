@@ -7,17 +7,21 @@ const orderSchema = new Schema(
       ref: "User",
       required: [true, "Make sure to the userId"],
     },
-    itemId: {
-      type: Schema.Types.ObjectId,
-      ref: "Menu",
-      required: true,
-    },
+    items: [
+      {
+        itemId: {
+          type: Schema.Types.ObjectId,
+          ref: "Menu",
+          required: true,
+        },
+      },
+    ],
     totalAmt: {
       type: Number,
     },
     deliveryStatus: {
       type: String,
-      enums: ["Pending", "Successful"],
+      enum: ["Pending", "Successful"],
       default: "Pending",
     },
     transactionId: {

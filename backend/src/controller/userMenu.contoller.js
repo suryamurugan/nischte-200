@@ -15,39 +15,55 @@ export const getAllAvaiableShops = async (req, res) => {
   }
 };
 
-export const getMenuOfAShop = async (req, res) => {
+export const getMenuOfXShop = async (req, res) => {
   try {
     const shopId = req.params.shopId;
-    const menu = await Menu.findOne({ shopId });
-
-    const visitCount = await Order.countDocuments({
-      // userId: req.user.id,
-      userId: req.body.userId,
+    const menus = await Menu.find({
       shopId,
     });
-
-    const allOfferIds = menu.items.map((item) => item.offerId);
-    const offers = await Offer.find({ _id: { $in: allOfferIds } });
-
-    const items = await Promise.all(
-      menu.items.map(async (item) => {
-        const itemOffers = offers.filter((offer) =>
-          offer._id.equals(item.offerId)
-        );
-
-        const validatedOffers = await Promise.all(
-          itemOffers.map((offer) => executeOfferRules(offer, visitCount))
-        );
-
-        return { ...item, validatedOffers };
-      })
-    );
-
-    res.status(200).json(items);
+    // console.log("menu here", menus);
+    const allItems = menus.flatMap((menu) => menu.items);
+    res.status(200).json(allItems);
   } catch (error) {
     res.status(500).json({
       message: "Failed to get the menu",
-      error: error.message,
     });
   }
 };
+
+// export const getMenuOfAShop = async (req, res) => {
+//   try {
+//     const shopId = req.params.shopId;
+//     const menu = await Menu.findOne({ shopId });
+
+//     const visitCount = await Order.countDocuments({
+//       // userId: req.user.id,
+//       userId: req.body.userId,
+//       shopId,
+//     });
+
+//     const allOfferIds = menu.items.map((item) => item.offerId);
+//     const offers = await Offer.find({ _id: { $in: allOfferIds } });
+
+//     const items = await Promise.all(
+//       menu.items.map(async (item) => {
+//         const itemOffers = offers.filter((offer) =>
+//           offer._id.equals(item.offerId)
+//         );
+
+//         const validatedOffers = await Promise.all(
+//           itemOffers.map((offer) => executeOfferRules(offer, visitCount))
+//         );
+
+//         return { ...item, validatedOffers };
+//       })
+//     );
+
+//     res.status(200).json(items);
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "Failed to get the menu",
+//       error: error.message,
+//     });
+//   }
+// };
