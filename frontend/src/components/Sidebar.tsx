@@ -33,10 +33,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
         <Menu className="mt-2">
           <MenuItem component={<Link to="/shops" />}> Shops </MenuItem>
-          <MenuItem> About us</MenuItem>
-          <MenuItem> Contact us</MenuItem>
+          <MenuItem component={<Link to="/about-us" />}> About us</MenuItem>
+          <MenuItem component={<Link to="/contact-us" />}> Contact us</MenuItem>
           <SubMenu label="Owners">
-            <MenuItem> Manage shops</MenuItem>
+            <MenuItem component={<Link to="/register-shop" />}>
+              Register shop
+            </MenuItem>
+            <MenuItem component={<Link to="/manage-shop" />}>
+              Manage shops
+            </MenuItem>
           </SubMenu>
         </Menu>
       </ProSidebar>
