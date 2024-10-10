@@ -1,3 +1,5 @@
+import { FC } from "react";
+
 interface inputProps {
   type: string;
   placeholder: string;
@@ -5,7 +7,12 @@ interface inputProps {
   value: string;
 }
 
-export const Search = ({ type, placeholder, onChange, value }: inputProps) => {
+export const Search: FC<inputProps> = ({
+  type,
+  placeholder,
+  onChange,
+  value,
+}) => {
   return (
     <>
       <input
