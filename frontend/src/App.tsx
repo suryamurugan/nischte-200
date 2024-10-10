@@ -8,6 +8,7 @@ import { AboutUs } from "./pages/AboutUs";
 import { ContactUs } from "./pages/ContactUs";
 import { ManageShops } from "./pages/ManageShops";
 import { RegisterShop } from "./pages/RegisterShop";
+import { UpdateShop } from "./pages/UpdateShop";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -24,8 +25,11 @@ function App() {
           <Route path="/shops" element={<Shops />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/manage-shop" element={<ManageShops />} />
-          <Route path="/register-shop" element={<RegisterShop />} />
+          <Route path="/shop">
+            <Route path="manage" element={<ManageShops />} />
+            <Route path="register" element={<RegisterShop />} />
+            <Route path="update" element={<UpdateShop />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ClerkProvider>
