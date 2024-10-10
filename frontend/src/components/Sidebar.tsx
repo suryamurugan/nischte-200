@@ -7,6 +7,8 @@ import {
   SubMenu,
 } from "react-pro-sidebar";
 
+import { Link } from "react-router-dom";
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -30,7 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
         <Menu className="mt-2">
-          <MenuItem> Shops </MenuItem>
+          <MenuItem component={<Link to="/shops" />}> Shops </MenuItem>
           <MenuItem> About us</MenuItem>
           <MenuItem> Contact us</MenuItem>
           <SubMenu label="Owners">
