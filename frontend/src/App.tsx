@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/clerk-react";
 import { Route, Routes } from "react-router-dom";
-
+import { ProtectedRoute } from "./components/ProtectRoute";
 import { Home } from "./pages/Home";
 import { NotFound } from "./components/NotFound";
 import { Shops } from "./pages/Shops";
@@ -22,13 +22,41 @@ function App() {
       <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/shops" element={<Shops />} />
+          <Route
+            path="/shops"
+            element={
+              <ProtectedRoute>
+                <Shops />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/shop">
-            <Route path="manage" element={<ManageShops />} />
-            <Route path="register" element={<RegisterShop />} />
-            <Route path="update" element={<UpdateShop />} />
+            <Route
+              path="manage"
+              element={
+                <ProtectedRoute>
+                  <ManageShops />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="register"
+              element={
+                <ProtectedRoute>
+                  <RegisterShop />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="update"
+              element={
+                <ProtectedRoute>
+                  <UpdateShop />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -20,7 +20,7 @@ export const Search: FC<inputProps> = ({
         placeholder={placeholder}
         onChange={onChange}
         value={value}
-        className=" outline-none border border-gray-300 px-2 text-md w-32 md:w-[350px]"
+        className=" outline-none border border-gray-300 px-2 text-md w-72 md:w-[500px] py-2 mx-3"
       />
     </>
   );
