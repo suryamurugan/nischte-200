@@ -9,6 +9,7 @@ import { ContactUs } from "./pages/ContactUs";
 import { ManageShops } from "./pages/ManageShops";
 import { RegisterShop } from "./pages/RegisterShop";
 import { UpdateShop } from "./pages/UpdateShop";
+import { ShopDetails } from "./pages/shopDetails";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -54,6 +55,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <UpdateShop />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="details"
+              element={
+                <ProtectedRoute>
+                  <ShopDetails />
                 </ProtectedRoute>
               }
             />

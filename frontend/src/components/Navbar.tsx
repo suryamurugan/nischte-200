@@ -5,6 +5,7 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdCart } from "react-icons/io";
 import { Button } from "./ui/button";
@@ -26,7 +27,10 @@ export const Navbar: React.FC = () => {
     <>
       <div className="flex justify-between items-center p-4 relative z-20">
         {/* left section  */}
-        <h1 className="text-2xl font-bold cursor-pointer">Nischte</h1>
+
+        <Link to="/">
+          <h1 className="text-2xl font-bold cursor-pointer"> Nischte</h1>
+        </Link>
 
         {/* middle section  */}
 

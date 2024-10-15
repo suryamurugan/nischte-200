@@ -1,45 +1,37 @@
-import { z } from "zod";
 import Form from "@/components/Form";
 import { FC } from "react";
+import { fields } from "@/data/registerationFields";
+import axios from "axios";
+import { useUser } from "@clerk/clerk-react";
+import { API } from "@/utils/api";
 
 export const RegisterShop: FC = () => {
-  const fields = [
-    {
-      name: "name",
-      label: "Shop Name",
-      type: "text",
-      validation: z.string().min(1, { message: "Shop name is required" }),
-    },
-    {
-      name: "email",
-      label: "Email",
-      type: "email",
-      validation: z.string().email({ message: "Invalid email address" }),
-    },
-    {
-      name: "address",
-      label: "Address",
-      type: "text",
-      validation: z.string().min(1, { message: "Address is required" }),
-    },
-    {
-      name: "contact",
-      label: "Contact No",
-      type: "tel",
-      validation: z
-        .string()
-        .regex(/^\d{10}$/, { message: "Contact number must be 10 digits" }),
-    },
-    {
-      name: "picture",
-      label: "Picture",
-      type: "file",
-      validation: z.any().optional(),
-    },
-  ];
+  const { user } = useUser();
 
-  const handleRegister = (data: object) => {
-    console.log("Registering shop:", data);
+  const handleRegister = async (data: Record<string, any>) => {
+    const ownerId = user?.id;
+
+    const formData = new FormData();
+
+    if (ownerId) {
+      formData.append("ownerId", ownerId);
+    }
+
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    if (data.picture) {
+      formData.append("picture", data.picture[0]);
+    }
+
+    try {
+      const response = await axios.post(`${API}/api/v1/shop`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Shop registered successfully:", response.data);
+    } catch (error) {
+      console.error("Error registering shop:", error);
+    }
   };
 
   return (
