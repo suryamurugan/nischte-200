@@ -63,11 +63,11 @@ export const getShops = async (req, res) => {
   }
 };
 
-// Return al the shop of particular owner
+// Return all the shop of particular owner
 export const getAllOwnerShops = async (req, res) => {
   try {
     const ownerId = req.params.ownerId;
-    const shops = await Shop.findById(ownerId);
+    const shops = await Shop.find({ ownerId });
     res.status(200).json(shops);
   } catch (error) {
     res.status(500).json({

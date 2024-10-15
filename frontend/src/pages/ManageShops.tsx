@@ -51,12 +51,9 @@ export const ManageShops: FC = () => {
     <>
       <div className="px-6 md:px-[200px]">
         <nav className="flex justify-between items-center mb-4">
-          <h1 className="font-extrabold">Hey {user?.fullName}, </h1>
-          <div className="space-x-3 mt-2">
-            <Button>
-              <Link to="/menu">Add Item</Link>
-            </Button>
-          </div>
+          <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
+            Hey {user?.fullName},
+          </h1>
         </nav>
 
         {shopDetails.map((shop) => (

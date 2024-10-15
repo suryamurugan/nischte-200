@@ -4,6 +4,7 @@ import { fields } from "@/data/registerationFields";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { API } from "@/utils/api";
+import { toast } from "sonner";
 
 export const RegisterShop: FC = () => {
   const { user } = useUser();
@@ -20,6 +21,7 @@ export const RegisterShop: FC = () => {
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
+
     if (data.picture) {
       formData.append("picture", data.picture[0]);
     }
@@ -28,9 +30,10 @@ export const RegisterShop: FC = () => {
       const response = await axios.post(`${API}/api/v1/shop`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("Shop registered successfully:", response.data);
-    } catch (error) {
+      toast.success("Shop registered successfully!");
+    } catch (error: any) {
       console.error("Error registering shop:", error);
+      toast.error("Failed to register shop. Please try again.");
     }
   };
 

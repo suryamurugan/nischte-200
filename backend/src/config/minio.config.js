@@ -2,12 +2,12 @@ import * as Minio from "minio";
 
 const minioClient = new Minio.Client({
   endPoint: "22.0.0.179",
-  port: process.env.MINIO_PORT,
+  port: 9000,
   useSSL: false,
-  accessKey: process.env.MINIO_ACCESS_KEY,
-  secretKey: process.env.MINIO_SECRET_KEY,
+  accessKey: "zdUNw0ojDofdgwLRs8eR",
+  secretKey: "PtkP3Syt0e2BFlNkQgqe0yLHWpEIe7EeVKo87x4z",
 });
 
-const bucketName = process.env.MINIO_BUCKET;
+const bucketName = "nischte";
 
 export { minioClient, bucketName };

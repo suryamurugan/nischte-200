@@ -14,7 +14,7 @@ const router = Router();
 router.route("/").post(upload.single("picture"), createShop);
 router.route("/").get(getShops);
 router.route("/:id").get(getShop);
-router.route("/:ownerId").get(getAllOwnerShops);
+router.route("/own/:ownerId").get(getAllOwnerShops);
 router.route("/:id").patch(updateShop);
 router.route("/:id").delete(deleteUser);
 

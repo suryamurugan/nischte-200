@@ -24,8 +24,6 @@ export const ShopDetails: FC = () => {
 
   const [shopDetails, setShopDetails] = useState<Shop>();
 
-  console.log(shopId);
-
   const fetchShopDetails = async () => {
     try {
       const res = await axios.get(`${API}/api/v1/shop/${shopId}`);
@@ -43,9 +41,7 @@ export const ShopDetails: FC = () => {
   return (
     <>
       <div className="px-6 md:px-[200px]">
-        <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
-          Shop Details
-        </h1>
+        <h1 className="font-extrabold text-black text-xl">Shop Details</h1>
         <Card key={shopDetails?._id} className="cursor-pointer">
           <img
             src={shopDetails?.picture}
