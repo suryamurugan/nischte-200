@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import axios from "axios";
 import { API } from "@/utils/api";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Shop {
   _id: string;
@@ -33,8 +33,8 @@ export const Shops: FC = () => {
     }
   };
 
-  const handleShopDetailsClick = () => {
-    navigate("/shop/details");
+  const handleShopDetailsClick = (shopId: string) => {
+    navigate(`/shop/${shopId}`);
   };
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export const Shops: FC = () => {
           <Card
             key={shop._id}
             className="cursor-pointer"
-            onClick={handleShopDetailsClick}
+            onClick={() => handleShopDetailsClick(shop._id)}
           >
             <img
               src={shop.picture}

@@ -9,7 +9,8 @@ import { ContactUs } from "./pages/ContactUs";
 import { ManageShops } from "./pages/ManageShops";
 import { RegisterShop } from "./pages/RegisterShop";
 import { UpdateShop } from "./pages/UpdateShop";
-import { ShopDetails } from "./pages/shopDetails";
+import { ShopDetails } from "./pages/ShopDetails";
+import { OwnerManageShop } from "./pages/OwnerManageShop";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -59,10 +60,18 @@ function App() {
               }
             />
             <Route
-              path="details"
+              path=":shopId"
               element={
                 <ProtectedRoute>
                   <ShopDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="manage/:shopId"
+              element={
+                <ProtectedRoute>
+                  <OwnerManageShop />
                 </ProtectedRoute>
               }
             />
