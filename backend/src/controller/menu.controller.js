@@ -1,15 +1,13 @@
-// This menu controller is for shop owner
 import { Menu } from "../models/menu.models.js";
 import { Shop } from "../models/shop.model.js";
+import { uploadFile } from "../service/minio.service.js";
 
 export const createMenu = async (req, res) => {
   try {
     const shopId = req.params.shopId;
-    const { itemName, itemDescription, price, category, picture, offerId } =
-      req.body;
+    const { itemName, itemDescription, price, offerId } = req.body;
 
     const checkForShop = await Shop.findById(shopId);
-
     if (!checkForShop) {
       throw new Error("Shop doesn't exist");
     }
@@ -25,25 +23,33 @@ export const createMenu = async (req, res) => {
         throw new Error("Item name already exists");
       }
 
+      let pictureUrl = null;
+      if (req.file) {
+        pictureUrl = await uploadFile(req.file);
+      }
+
       menu.items.push({
         itemName,
         itemDescription,
         price,
-        category,
-        picture,
+        picture: pictureUrl,
         offerId,
       });
       const updatedMenu = await menu.save();
       res.status(200).json(updatedMenu);
     } else {
+      let pictureUrl = null;
+      if (req.file) {
+        pictureUrl = await uploadFile(req.file);
+      }
+
       const newMenu = new Menu({
         items: [
           {
             itemName,
             itemDescription,
             price,
-            category,
-            picture,
+            picture: pictureUrl,
             offerId,
           },
         ],
