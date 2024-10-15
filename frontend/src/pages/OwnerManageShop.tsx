@@ -69,7 +69,7 @@ export const OwnerManageShop: FC = () => {
           </h1>
           <div className="space-x-4 mt-2 mb-4">
             <Button>
-              <Link to="/menu">Add Item</Link>
+              <Link to={`/shop/${shopId}/add-menu`}>Add Item</Link>
             </Button>
             <Button>
               <Link to="/shop/update">Update Shop</Link>
