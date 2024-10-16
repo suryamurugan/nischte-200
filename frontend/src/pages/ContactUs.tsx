@@ -1,5 +1,13 @@
 import { FC } from "react";
+import { Navbar } from "@/components/Navbar";
 
 export const ContactUs: FC = () => {
-  return <>Contact us </>;
+  return (
+    <>
+      <div className="px-6 md:px-[200px]">
+        <Navbar />
+        Contact us
+      </div>
+    </>
+  );
 };

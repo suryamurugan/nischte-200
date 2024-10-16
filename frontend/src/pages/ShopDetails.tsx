@@ -27,6 +27,7 @@ import { useUser } from "@clerk/clerk-react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { Navbar } from "@/components/Navbar";
 
 interface Shop {
   _id: string;
@@ -98,6 +99,7 @@ export const ShopDetails: FC = () => {
   return (
     <>
       <div className="px-6 md:px-[200px]">
+        <Navbar />
         <nav className=" flex flex-col lg:flex-row items-center justify-between">
           <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
             {shop?.shopName}

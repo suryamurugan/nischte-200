@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/Navbar";
 
 import {
   Card,
@@ -50,6 +50,7 @@ export const ManageShops: FC = () => {
   return (
     <>
       <div className="px-6 md:px-[200px]">
+        <Navbar />
         <nav className="flex justify-between items-center mb-4">
           <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
             Hey {user?.fullName},

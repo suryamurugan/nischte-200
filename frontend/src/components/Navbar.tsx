@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center p-4 relative z-20">
+      <div className="flex justify-around items-center pt-4 relative z-20">
         {/* left section  */}
         <Link to="/">
           <h1 className="text-2xl font-bold cursor-pointer"> Nischte</h1>

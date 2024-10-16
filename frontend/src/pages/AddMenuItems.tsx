@@ -1,4 +1,5 @@
 import Form from "@/components/Form";
+import { Navbar } from "@/components/Navbar";
 import { FC } from "react";
 import { MenuItemFields } from "@/data/menuItemFields";
 import axios from "axios";
@@ -46,16 +47,19 @@ export const AddMenuItem: FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Add Menu Item
-        </h2>
-        <Form
-          fields={MenuItemFields}
-          onSubmit={handleAddMenuItem}
-          submitButtonText="Add Item"
-        />
+    <div className="px-6 md:px-[200px]">
+      <Navbar />
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+            Add Menu Item
+          </h2>
+          <Form
+            fields={MenuItemFields}
+            onSubmit={handleAddMenuItem}
+            submitButtonText="Add Item"
+          />
+        </div>
       </div>
     </div>
   );

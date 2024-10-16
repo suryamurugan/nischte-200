@@ -1,4 +1,5 @@
 import { API } from "@/utils/api";
+import { Navbar } from "@/components/Navbar";
 import axios from "axios";
 import {
   ChangeEvent,
@@ -103,9 +104,10 @@ export const MenuDetails: FC = () => {
   return (
     <>
       {/* Remove top padding: Reminder   */}
-      <div className="px-6 md:px-[200px] pt-4">
+      <div className="px-6 md:px-[200px]">
+        <Navbar />
         {/* Display menu items  */}
-        <div className="mb-3">
+        <div className="my-4">
           <Card className="pt-2 pb-2">
             {/* item display wrapper */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
