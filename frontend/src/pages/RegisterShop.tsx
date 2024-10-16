@@ -1,5 +1,6 @@
 import Form from "@/components/Form";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { FC } from "react";
 import { fields } from "@/data/registerationFields";
 import axios from "axios";
@@ -44,20 +45,23 @@ export const RegisterShop: FC = () => {
 
   return (
     <>
-      <div className="px-6 md:px-[200px]">
+      <div className="px-6 md:px-[200px] flex flex-col min-h-screen">
         <Navbar />
-        <div className="min-h-screen flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-              Register Your Shop
-            </h2>
-            <Form
-              fields={fields}
-              onSubmit={handleRegister}
-              submitButtonText="Register Shop"
-            />
+        <div className="flex-grow">
+          <div className="min-h-screen flex justify-center items-center">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+              <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+                Register Your Shop
+              </h2>
+              <Form
+                fields={fields}
+                onSubmit={handleRegister}
+                submitButtonText="Register Shop"
+              />
+            </div>
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );

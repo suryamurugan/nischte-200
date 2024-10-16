@@ -91,6 +91,18 @@ export const ShopDetails: FC = () => {
     navigate(`/shop/${shopId}/menu/${menuId}`);
   };
 
+  const handleDeleteItem = async (itemId: string) => {
+    try {
+      await axios.delete(`${API}/api/v1/shop/${shopId}/menu/${itemId}`);
+      toast.success("Item deleted successfully!");
+      setItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
+      navigate(`/shop/manage/${shopId}`);
+    } catch (error) {
+      console.log("Failed to delete the shop");
+      toast.error("Failed to delete item. Please try again.");
+    }
+  };
+
   const isManagePage = location.pathname.includes("/shop/manage");
 
   useEffect(() => {
@@ -130,7 +142,7 @@ export const ShopDetails: FC = () => {
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>
-                        Are you absolutely sure?
+                        Are you sure you want to delete this Shop?
                       </AlertDialogTitle>
                       <AlertDialogDescription>
                         This action cannot be undone. This will permanently
@@ -180,15 +192,51 @@ export const ShopDetails: FC = () => {
                 <Card
                   key={item?._id}
                   className="cursor-pointer w-full"
-                  onClick={() => handleItemClick(item._id)}
+                  // onClick={() => handleItemClick(item._id)}
                 >
                   <img
                     src={item?.picture}
                     alt={item?.itemName}
                     className="h-48 w-full object-cover rounded-t-md"
                   />
-                  <CardHeader>
-                    <CardTitle className="text-2xl">{item?.itemName}</CardTitle>
+                  <CardHeader className="flex-row justify-between items-center">
+                    <CardTitle className="text-2xl ">
+                      {item?.itemName}
+                    </CardTitle>
+                    <div className="space-x-2">
+                      <Link to="/shop/update">
+                        <Button className="space-x-2">
+                          <FaPen size={18} />
+                        </Button>
+                      </Link>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" className="space-x-2">
+                            <MdDelete size={18} />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure you want to delete this item?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your Item and remove your data
+                              from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteItem(item._id)}
+                            >
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <p>

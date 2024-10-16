@@ -59,6 +59,7 @@ export const ManageShops: FC = () => {
           </nav>
 
           {shopDetails.map((shop) => (
+            // TODO : fix if the word is big it is overflowing
             <Card
               key={shop._id}
               className="cursor-pointer mb-4 h-30"
