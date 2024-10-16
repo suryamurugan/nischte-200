@@ -28,6 +28,7 @@ import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 interface Shop {
   _id: string;
@@ -98,109 +99,112 @@ export const ShopDetails: FC = () => {
   }, []);
   return (
     <>
-      <div className="px-6 md:px-[200px]">
+      <div className="px-6 md:px-[200px] flex flex-col min-h-screen">
         <Navbar />
-        <nav className=" flex flex-col lg:flex-row items-center justify-between">
-          <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
-            {shop?.shopName}
-          </h1>
-          {user?.id === shop?.ownerId && isManagePage ? (
-            <div className="space-x-4 mt-2 mb-4 flex items-center justify-center">
-              <Link to={`/shop/${shopId}/add-menu`}>
-                <Button className="space-x-2">
-                  <MdOutlineAddCircleOutline size={18} />
-                  <p>Item</p>
-                </Button>
-              </Link>
-
-              <Link to="/shop/update">
-                <Button className="space-x-2">
-                  <FaPen size={18} /> <p>Shop</p>
-                </Button>
-              </Link>
-
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" className="space-x-2">
-                    <MdDelete size={18} /> <p>Shop</p>
+        <div className="flex-grow">
+          <nav className=" flex flex-col lg:flex-row items-center justify-between">
+            <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
+              {shop?.shopName}
+            </h1>
+            {user?.id === shop?.ownerId && isManagePage ? (
+              <div className="space-x-4 mt-2 mb-4 flex items-center justify-center">
+                <Link to={`/shop/${shopId}/add-menu`}>
+                  <Button className="space-x-2">
+                    <MdOutlineAddCircleOutline size={18} />
+                    <p>Item</p>
                   </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your shop and remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteShop}>
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          ) : null}
-        </nav>
+                </Link>
 
-        {/* Shop Display  */}
-        <Card key={shop?._id} className="cursor-pointer mb-4">
-          <img
-            src={shop?.picture}
-            alt={shop?.shopName}
-            className="h-48 w-full object-cover rounded-t-md"
-          />
-          <CardHeader>
-            <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
-            <CardDescription>{shop?.address}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>
-              <span className="font-bold">Contact</span>: {shop?.contactNo}
-            </p>
-          </CardContent>
-          <CardFooter>
-            <p>
-              <span className="font-bold">Shop ID</span>: {shop?._id}
-            </p>
-          </CardFooter>
-        </Card>
+                <Link to="/shop/update">
+                  <Button className="space-x-2">
+                    <FaPen size={18} /> <p>Shop</p>
+                  </Button>
+                </Link>
 
-        {/* Items Display  */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-          {items &&
-            items.length > 0 &&
-            items.map((item) => (
-              <Card
-                key={item?._id}
-                className="cursor-pointer w-full"
-                onClick={() => handleItemClick(item._id)}
-              >
-                <img
-                  src={item?.picture}
-                  alt={item?.itemName}
-                  className="h-48 w-full object-cover rounded-t-md"
-                />
-                <CardHeader>
-                  <CardTitle className="text-2xl">{item?.itemName}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    <span className="font-bold">{item?.itemDescription}</span>
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <p>
-                    <span className="font-bold">Price: </span>: {item?.price}
-                  </p>
-                </CardFooter>
-              </Card>
-            ))}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="space-x-2">
+                      <MdDelete size={18} /> <p>Shop</p>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete your shop and remove your data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteShop}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            ) : null}
+          </nav>
+
+          {/* Shop Display  */}
+          <Card key={shop?._id} className="cursor-pointer mb-4">
+            <img
+              src={shop?.picture}
+              alt={shop?.shopName}
+              className="h-48 w-full object-cover rounded-t-md"
+            />
+            <CardHeader>
+              <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
+              <CardDescription>{shop?.address}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>
+                <span className="font-bold">Contact</span>: {shop?.contactNo}
+              </p>
+            </CardContent>
+            <CardFooter>
+              <p>
+                <span className="font-bold">Shop ID</span>: {shop?._id}
+              </p>
+            </CardFooter>
+          </Card>
+
+          {/* Items Display  */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
+            {items &&
+              items.length > 0 &&
+              items.map((item) => (
+                <Card
+                  key={item?._id}
+                  className="cursor-pointer w-full"
+                  onClick={() => handleItemClick(item._id)}
+                >
+                  <img
+                    src={item?.picture}
+                    alt={item?.itemName}
+                    className="h-48 w-full object-cover rounded-t-md"
+                  />
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{item?.itemName}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>
+                      <span className="font-bold">{item?.itemDescription}</span>
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <p>
+                      <span className="font-bold">Price: </span>: {item?.price}
+                    </p>
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
         </div>
+        <Footer />
       </div>
     </>
   );

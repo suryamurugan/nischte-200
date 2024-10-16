@@ -36,10 +36,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <MenuItem component={<Link to="/about-us" />}> About us</MenuItem>
           <MenuItem component={<Link to="/contact-us" />}> Contact us</MenuItem>
           <SubMenu label="Owners">
-            <MenuItem component={<Link to="shop/register" />}>
+            <MenuItem component={<Link to="/shop/register" />}>
               Register shop
             </MenuItem>
-            <MenuItem component={<Link to="shop/manage" />}>
+            <MenuItem component={<Link to="/shop/manage" />}>
               Manage shops
             </MenuItem>
           </SubMenu>

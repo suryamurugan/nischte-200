@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
-
+import { Footer } from "@/components/Footer";
 import {
   Card,
   CardContent,
@@ -49,41 +49,44 @@ export const ManageShops: FC = () => {
   }, []);
   return (
     <>
-      <div className="px-6 md:px-[200px]">
+      <div className="px-6 md:px-[200px] flex flex-col min-h-screen">
         <Navbar />
-        <nav className="flex justify-between items-center mb-4">
-          <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
-            Hey {user?.fullName},
-          </h1>
-        </nav>
+        <div className="flex-grow">
+          <nav className="flex justify-between items-center mb-4">
+            <h1 className="font-extrabold text-black flex justify-center mt-4 mb-4 text-4xl">
+              Hey {user?.fullName},
+            </h1>
+          </nav>
 
-        {shopDetails.map((shop) => (
-          <Card
-            key={shop._id}
-            className="cursor-pointer mb-4 h-30"
-            onClick={() => handleShopClick(shop._id)}
-          >
-            <img
-              src={shop.picture}
-              alt={shop.shopName}
-              className="h-48 w-full object-cover rounded-t-md"
-            />
-            <CardHeader>
-              <CardTitle className="text-2xl">{shop.shopName}</CardTitle>
-              <CardDescription>{shop.address}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                <span className="font-bold">Contact</span>: {shop.contactNo}
-              </p>
-            </CardContent>
-            <CardFooter>
-              <p>
-                <span className="font-bold">Shop ID</span>: {shop._id}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
+          {shopDetails.map((shop) => (
+            <Card
+              key={shop._id}
+              className="cursor-pointer mb-4 h-30"
+              onClick={() => handleShopClick(shop._id)}
+            >
+              <img
+                src={shop.picture}
+                alt={shop.shopName}
+                className="h-48 w-full object-cover rounded-t-md"
+              />
+              <CardHeader>
+                <CardTitle className="text-2xl">{shop.shopName}</CardTitle>
+                <CardDescription>{shop.address}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  <span className="font-bold">Contact</span>: {shop.contactNo}
+                </p>
+              </CardContent>
+              <CardFooter>
+                <p>
+                  <span className="font-bold">Shop ID</span>: {shop._id}
+                </p>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+        <Footer />
       </div>
     </>
   );
