@@ -10,7 +10,6 @@ import { ManageShops } from "./pages/ManageShops";
 import { RegisterShop } from "./pages/RegisterShop";
 import { UpdateShop } from "./pages/UpdateShop";
 import { ShopDetails } from "./pages/ShopDetails";
-import { OwnerManageShop } from "./pages/OwnerManageShop";
 import { Toaster } from "sonner";
 import { AddMenuItem } from "./pages/AddMenuItems";
 
@@ -73,7 +72,7 @@ function App() {
               path="manage/:shopId"
               element={
                 <ProtectedRoute>
-                  <OwnerManageShop />
+                  <ShopDetails />
                 </ProtectedRoute>
               }
             />
