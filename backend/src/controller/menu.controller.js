@@ -67,27 +67,22 @@ export const createMenu = async (req, res) => {
   }
 };
 
-//Gets a particular menu of a shop
 export const getMenuItem = async (req, res) => {
   try {
-    const menuId = req.params.menuId;
-    const itemId = req.params.itemId;
-    const menu = await Menu.findById(menuId);
+    const { itemId } = req.params;
+
+    const menu = await Menu.findOne({ "items._id": itemId }, { "items.$": 1 });
 
     if (!menu) {
-      throw new Error("Menu not found");
+      return res.status(404).json({ message: "Menu or item not found" });
     }
 
-    const item = menu.items.id(itemId);
-
-    if (!item) {
-      throw new Error("Item not found");
-    }
+    const item = menu.items[0];
 
     res.status(200).json(item);
   } catch (error) {
     res.status(500).json({
-      message: "Failed to get a particular menu",
+      message: "Failed to get the menu item",
       error: error.message,
     });
   }

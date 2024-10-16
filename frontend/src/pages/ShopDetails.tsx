@@ -24,6 +24,9 @@ import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { API } from "@/utils/api";
 import { useUser } from "@clerk/clerk-react";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { FaPen } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 interface Shop {
   _id: string;
@@ -34,8 +37,18 @@ interface Shop {
   ownerId: string;
 }
 
+interface Item {
+  _id: string;
+  itemName: string;
+  itemDescription: string;
+  offerId: string;
+  picture: string;
+  price: string;
+}
+
 export const ShopDetails: FC = () => {
   const [shop, setShop] = useState<Shop>();
+  const [items, setItems] = useState<Item[]>([]);
 
   const { user } = useUser();
 
@@ -63,10 +76,24 @@ export const ShopDetails: FC = () => {
     }
   };
 
+  const fetchMenuItems = async () => {
+    try {
+      const res = await axios.get(`${API}/api/v1/shop/${shopId}/menu`);
+      setItems(res.data[0].items);
+    } catch (error) {
+      console.log("Failed to fetch the menu itemsz");
+    }
+  };
+
+  const handleItemClick = async (menuId: string) => {
+    navigate(`/shop/${shopId}/menu/${menuId}`);
+  };
+
   const isManagePage = location.pathname.includes("/shop/manage");
 
   useEffect(() => {
     fetchShopDetails();
+    fetchMenuItems();
   }, []);
   return (
     <>
@@ -76,16 +103,25 @@ export const ShopDetails: FC = () => {
             {shop?.shopName}
           </h1>
           {user?.id === shop?.ownerId && isManagePage ? (
-            <div className="space-x-4 mt-2 mb-4">
-              <Button>
-                <Link to={`/shop/${shopId}/add-menu`}>Add Item</Link>
-              </Button>
-              <Button>
-                <Link to="/shop/update">Update Shop</Link>
-              </Button>
+            <div className="space-x-4 mt-2 mb-4 flex items-center justify-center">
+              <Link to={`/shop/${shopId}/add-menu`}>
+                <Button className="space-x-2">
+                  <MdOutlineAddCircleOutline size={18} />
+                  <p>Item</p>
+                </Button>
+              </Link>
+
+              <Link to="/shop/update">
+                <Button className="space-x-2">
+                  <FaPen size={18} /> <p>Shop</p>
+                </Button>
+              </Link>
+
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive">Delete Shop</Button>
+                  <Button variant="destructive" className="space-x-2">
+                    <MdDelete size={18} /> <p>Shop</p>
+                  </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -109,8 +145,8 @@ export const ShopDetails: FC = () => {
           ) : null}
         </nav>
 
-        {/* Shop Details  */}
-        <Card key={shop?._id} className="cursor-pointer">
+        {/* Shop Display  */}
+        <Card key={shop?._id} className="cursor-pointer mb-4">
           <img
             src={shop?.picture}
             alt={shop?.shopName}
@@ -131,6 +167,38 @@ export const ShopDetails: FC = () => {
             </p>
           </CardFooter>
         </Card>
+
+        {/* Items Display  */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
+          {items &&
+            items.length > 0 &&
+            items.map((item) => (
+              <Card
+                key={item?._id}
+                className="cursor-pointer w-full"
+                onClick={() => handleItemClick(item._id)}
+              >
+                <img
+                  src={item?.picture}
+                  alt={item?.itemName}
+                  className="h-48 w-full object-cover rounded-t-md"
+                />
+                <CardHeader>
+                  <CardTitle className="text-2xl">{item?.itemName}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    <span className="font-bold">{item?.itemDescription}</span>
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <p>
+                    <span className="font-bold">Price: </span>: {item?.price}
+                  </p>
+                </CardFooter>
+              </Card>
+            ))}
+        </div>
       </div>
     </>
   );
