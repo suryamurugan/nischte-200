@@ -13,14 +13,14 @@ interface FieldConfig {
   validation: z.ZodTypeAny;
 }
 
-interface ShopFormProps {
+interface FormProps {
   fields: FieldConfig[];
-  onSubmit: (data: any) => void;
+  onSubmit: (data: any, resetForm: () => void) => void;
   initialData?: Record<string, any>;
   submitButtonText?: string;
 }
 
-const Form: React.FC<ShopFormProps> = ({
+const Form: React.FC<FormProps> = ({
   fields,
   onSubmit,
   initialData = {},
@@ -36,14 +36,19 @@ const Form: React.FC<ShopFormProps> = ({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: initialData,
   });
 
+  const handleFormSubmit = (data: any) => {
+    onSubmit(data, reset);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       {fields.map((field) => (
         <div key={field.name}>
           <Label htmlFor={field.name} className="font-bold text-gray-800">

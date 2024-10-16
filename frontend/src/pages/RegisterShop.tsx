@@ -9,7 +9,10 @@ import { toast } from "sonner";
 export const RegisterShop: FC = () => {
   const { user } = useUser();
 
-  const handleRegister = async (data: Record<string, any>) => {
+  const handleRegister = async (
+    data: Record<string, any>,
+    resetForm: () => void
+  ) => {
     const ownerId = user?.id;
 
     const formData = new FormData();
@@ -31,6 +34,7 @@ export const RegisterShop: FC = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Shop registered successfully!");
+      resetForm();
     } catch (error: any) {
       console.error("Error registering shop:", error);
       toast.error("Failed to register shop. Please try again.");

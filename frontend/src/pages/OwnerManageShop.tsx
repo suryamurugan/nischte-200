@@ -98,7 +98,6 @@ export const OwnerManageShop: FC = () => {
         </nav>
 
         {/* Shop Details  */}
-
         <Card key={shop?._id} className="cursor-pointer">
           <img
             src={shop?.picture}

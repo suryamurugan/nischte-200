@@ -27,13 +27,11 @@ export const Navbar: React.FC = () => {
     <>
       <div className="flex justify-between items-center p-4 relative z-20">
         {/* left section  */}
-
         <Link to="/">
           <h1 className="text-2xl font-bold cursor-pointer"> Nischte</h1>
         </Link>
 
         {/* middle section  */}
-
         <div className="flex rounded-md overflow-hidden max-w-md mx-auto mt-2">
           <Search
             type="text"
@@ -44,7 +42,6 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Right section  */}
-
         <div className="flex items-center space-x-3 md:space-x-6 lg:space-x-7">
           <div>
             {!isSignedIn && (

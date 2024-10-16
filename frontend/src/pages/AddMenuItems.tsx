@@ -9,7 +9,10 @@ import { useParams } from "react-router-dom";
 export const AddMenuItem: FC = () => {
   const { shopId } = useParams();
 
-  const handleAddMenuItem = async (data: Record<string, any>) => {
+  const handleAddMenuItem = async (
+    data: Record<string, any>,
+    resetForm: () => void
+  ) => {
     const formData = new FormData();
 
     if (shopId) {
@@ -35,6 +38,7 @@ export const AddMenuItem: FC = () => {
         }
       );
       toast.success("Menu item added successfully!");
+      resetForm();
     } catch (error: any) {
       console.error("Error adding menu item:", error);
       toast.error("Failed to add menu item. Please try again.");
