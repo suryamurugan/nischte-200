@@ -32,7 +32,10 @@ export const createShop = async (req, res) => {
 
 export const getShops = async (req, res) => {
   try {
-    const shops = await Shop.find();
+    const limit = parseInt(req.query.limit) || null;
+    const query = limit ? Shop.find().limit(limit) : Shop.find();
+
+    const shops = await query;
     res.status(200).json(shops);
   } catch (error) {
     res.status(500).json({
