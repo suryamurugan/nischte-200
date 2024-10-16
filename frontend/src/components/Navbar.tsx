@@ -32,7 +32,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* middle section  */}
-        <div className="flex rounded-md overflow-hidden max-w-md mx-auto mt-2">
+        <div className="hidden sm:flex rounded-md overflow-hidden max-w-md mx-auto mt-2">
           <Search
             type="text"
             placeholder="search here..."
