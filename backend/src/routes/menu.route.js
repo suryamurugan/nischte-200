@@ -5,11 +5,13 @@ import {
   updateMenu,
   deleteItem,
   getAllMenuOfShop,
+  getXitems,
 } from "../controller/menu.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();
 
+router.route("/menu").get(getXitems);
 router.route("/:shopId/menu").post(upload.single("picture"), createMenu);
 router.route("/:shopId/menu").get(getAllMenuOfShop);
 router.route("/:shopId/menu/:itemId").get(getMenuItem);

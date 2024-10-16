@@ -112,6 +112,28 @@ export const getAllMenuOfShop = async (req, res) => {
   }
 };
 
+export const getXitems = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit);
+    const menus = await Menu.find();
+
+    const allItems = menus.reduce((acc, menu) => {
+      return acc.concat(menu.items);
+    }, []);
+
+    const shuffledItems = allItems.sort(() => 0.5 - Math.random());
+
+    const randomItems = shuffledItems.slice(0, limit);
+
+    res.status(200).json(randomItems);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get the menu",
+      error: error.message,
+    });
+  }
+};
+
 export const updateMenu = async (req, res) => {
   try {
     const menuId = req.params.menuId;
