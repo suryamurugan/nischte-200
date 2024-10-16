@@ -28,7 +28,6 @@ export const Shops: FC = () => {
   const fetchShopDetails = async () => {
     try {
       const res = await axios.get(`${API}/api/v1/shop`);
-      console.log("response", res.data);
       setShops(res.data);
     } catch (error) {
       console.log("Failed to fetch the shop details", error);

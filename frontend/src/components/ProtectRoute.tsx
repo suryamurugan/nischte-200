@@ -11,7 +11,7 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!isLoaded)
     return (
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center min-h-screen">
         <Loader />
       </div>
     );

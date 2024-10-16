@@ -32,7 +32,7 @@ interface Item {
   itemName: string;
   itemDescription: string;
   picture: string;
-  offerId: string;
+  offerId?: string;
   price: number;
 }
 
