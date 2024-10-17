@@ -51,12 +51,15 @@ interface Item {
 export const ShopDetails: FC = () => {
   const [shop, setShop] = useState<Shop>();
   const [items, setItems] = useState<Item[]>([]);
+  const [charLimit, setCharLimit] = useState(70);
 
   const { user } = useUser();
 
   const { shopId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const isManagePage = location.pathname.includes("/shop/manage");
 
   const fetchShopDetails = async () => {
     try {
@@ -103,12 +106,31 @@ export const ShopDetails: FC = () => {
     }
   };
 
-  const isManagePage = location.pathname.includes("/shop/manage");
+  const updateCharLimit = () => {
+    const width = window.innerWidth;
+    if (width < 640) {
+      setCharLimit(70);
+    } else if (width >= 640 && width < 1024) {
+      setCharLimit(70);
+    } else {
+      setCharLimit(200);
+    }
+  };
 
   useEffect(() => {
     fetchShopDetails();
     fetchMenuItems();
   }, []);
+
+  useEffect(() => {
+    updateCharLimit();
+    window.addEventListener("resize", updateCharLimit);
+
+    return () => {
+      window.removeEventListener("resize", updateCharLimit);
+    };
+  }, []);
+
   return (
     <>
       <div className="px-6 md:px-[200px] flex flex-col min-h-screen">
@@ -162,29 +184,45 @@ export const ShopDetails: FC = () => {
           </nav>
 
           {/* Shop Display  */}
-          <Card key={shop?._id} className="cursor-pointer mb-4">
-            <img
-              src={shop?.picture}
-              alt={shop?.shopName}
-              className="h-48 w-full object-cover rounded-t-md"
-            />
-            <CardHeader>
-              <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
-              <CardDescription>{shop?.address}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>
-                <span className="font-bold">Contact</span>: {shop?.contactNo}
-              </p>
-            </CardContent>
-            <CardFooter>
-              <p>
-                <span className="font-bold">Shop ID</span>: {shop?._id}
-              </p>
-            </CardFooter>
+          <Card className="cursor-pointer mb-4 flex">
+            <div className="w-[40%]">
+              {shop && (
+                <img
+                  src={shop.picture}
+                  alt={shop.shopName}
+                  className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
+                />
+              )}
+            </div>
+            <div className="w-[60%]">
+              <CardHeader>
+                <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
+                <span className="text-[10px] sm:text-sm">{shop?._id}</span>
+                <CardDescription>
+                  {(shop?.address ?? "").length > 60
+                    ? `${shop?.address.substring(0, 60)}...`
+                    : shop?.address || "No address available"}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  <span className="font-bold text-[10px] sm:text-lg  sm:font-semibold ">
+                    Contact
+                  </span>
+                  :
+                  <span className=" pl-1 text-[10px] sm:text-sm">
+                    {shop?.contactNo}
+                  </span>
+                </p>
+              </CardContent>
+            </div>
           </Card>
 
           {/* Items Display  */}
+          <h1 className="font-extrabold text-black  mt-4 mb-4 text-lg">
+            In The House
+          </h1>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
             {items &&
               items.length > 0 &&
@@ -192,7 +230,7 @@ export const ShopDetails: FC = () => {
                 <Card
                   key={item?._id}
                   className="cursor-pointer w-full"
-                  // onClick={() => handleItemClick(item._id)}
+                  onClick={() => handleItemClick(item._id)}
                 >
                   <img
                     src={item?.picture}
@@ -240,7 +278,11 @@ export const ShopDetails: FC = () => {
                   </CardHeader>
                   <CardContent>
                     <p>
-                      <span className="font-bold">{item?.itemDescription}</span>
+                      <span className="text-sm">
+                        {item.itemDescription.length > charLimit
+                          ? `${item.itemDescription.substring(0, charLimit)}...`
+                          : item?.itemDescription}
+                      </span>
                     </p>
                   </CardContent>
                   <CardFooter>

@@ -23,6 +23,8 @@ interface Shop {
 
 export const Shops: FC = () => {
   const [shops, setShops] = useState<Shop[]>([]);
+  const [charLimit, setCharLimit] = useState(70);
+
   const navigate = useNavigate();
 
   const fetchShopDetails = async () => {
@@ -38,6 +40,26 @@ export const Shops: FC = () => {
     navigate(`/shop/${shopId}`);
   };
 
+  const updateCharLimit = () => {
+    const width = window.innerWidth;
+    if (width < 640) {
+      setCharLimit(70);
+    } else if (width >= 640 && width < 1024) {
+      setCharLimit(70);
+    } else {
+      setCharLimit(200);
+    }
+  };
+
+  useEffect(() => {
+    updateCharLimit();
+    window.addEventListener("resize", updateCharLimit);
+
+    return () => {
+      window.removeEventListener("resize", updateCharLimit);
+    };
+  }, []);
+
   useEffect(() => {
     fetchShopDetails();
   }, []);
@@ -51,28 +73,42 @@ export const Shops: FC = () => {
           {shops.map((shop) => (
             <Card
               key={shop._id}
-              className="cursor-pointer"
+              className="cursor-pointer mb-4 flex"
               onClick={() => handleShopDetailsClick(shop._id)}
             >
-              <img
-                src={shop.picture}
-                alt={shop.shopName}
-                className="h-48 w-full object-cover rounded-t-md"
-              />
-              <CardHeader>
-                <CardTitle className="text-2xl">{shop.shopName}</CardTitle>
-                <CardDescription>{shop.address}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  <span className="font-bold">Contact</span>: {shop.contactNo}
-                </p>
-              </CardContent>
-              <CardFooter>
-                <p>
-                  <span className="font-bold">Shop ID</span>: {shop._id}
-                </p>
-              </CardFooter>
+              <div className="w-[40%]">
+                <img
+                  src={shop.picture}
+                  alt={shop.shopName}
+                  className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
+                />
+              </div>
+              <div className="w-[60%]">
+                <CardHeader>
+                  <CardTitle className="text-2xl">{shop.shopName}</CardTitle>
+                  <span className="text-[10px] sm:text-sm">{shop._id}</span>
+                  <CardDescription>
+                    <p>
+                      <span className="text-sm">
+                        {shop.address.length > charLimit
+                          ? `${shop.address.substring(0, charLimit)}...`
+                          : shop?.address}
+                      </span>
+                    </p>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    <span className="font-bold text-[10px] sm:text-lg  sm:font-semibold ">
+                      Contact
+                    </span>
+                    :
+                    <span className=" pl-1 text-[10px] sm:text-sm">
+                      {shop.contactNo}
+                    </span>
+                  </p>
+                </CardContent>
+              </div>
             </Card>
           ))}
         </div>

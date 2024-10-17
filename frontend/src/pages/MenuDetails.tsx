@@ -193,8 +193,12 @@ export const MenuDetails: FC = () => {
                   </CarouselItem>
                 ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            {items.length > 2 ? (
+              <>
+                <CarouselPrevious />
+                <CarouselNext />
+              </>
+            ) : null}
           </Carousel>
         </div>
       </div>
