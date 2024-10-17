@@ -2,7 +2,7 @@ import Form from "@/components/Form";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { FC } from "react";
-import { fields } from "@/data/registerationFields";
+import { ShopFields } from "@/data/ShopField";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { API } from "@/utils/api";
@@ -54,7 +54,7 @@ export const RegisterShop: FC = () => {
                 Register Your Shop
               </h2>
               <Form
-                fields={fields}
+                fields={ShopFields}
                 onSubmit={handleRegister}
                 submitButtonText="Register Shop"
               />

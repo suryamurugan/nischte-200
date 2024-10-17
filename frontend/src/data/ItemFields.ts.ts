@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const MenuItemFields = [
+export const ItemFields = [
   {
     name: "itemName",
     label: "Item Name",

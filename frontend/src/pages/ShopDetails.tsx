@@ -43,7 +43,7 @@ interface Item {
   _id: string;
   itemName: string;
   itemDescription: string;
-  offerId: string;
+  offerId?: string;
   picture: string;
   price: string;
 }
@@ -116,6 +116,11 @@ export const ShopDetails: FC = () => {
     } else {
       setCharLimit(200);
     }
+  };
+
+  const handleItemUpdate = (menuId: string) => {
+    console.log("hey");
+    navigate(`/shop/${shopId}/menu/${menuId}/update`);
   };
 
   useEffect(() => {
@@ -245,11 +250,15 @@ export const ShopDetails: FC = () => {
                     <div className="space-x-2">
                       {isManagePage && shop?.ownerId === user?.id ? (
                         <>
-                          <Link to="/shop/update">
-                            <Button className="space-x-2">
-                              <FaPen size={18} />
-                            </Button>
-                          </Link>
+                          <Button className="space-x-2">
+                            <FaPen
+                              size={18}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleItemUpdate(item._id);
+                              }}
+                            />
+                          </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button

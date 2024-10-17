@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import { AddMenuItem } from "./pages/AddMenuItems";
 import { MenuDetails } from "./pages/MenuDetails";
 import { Menu } from "react-pro-sidebar";
+import { UpdateMenu } from "./pages/UpdateMenu";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -78,6 +79,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path=":shopId/menu/:menuId/update"
+              element={
+                <ProtectedRoute>
+                  <UpdateMenu />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path=":shopId/add-menu"
@@ -96,6 +105,7 @@ function App() {
               }
             />
           </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ClerkProvider>

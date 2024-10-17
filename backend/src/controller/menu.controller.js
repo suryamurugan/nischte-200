@@ -136,22 +136,21 @@ export const getXitems = async (req, res) => {
 
 export const updateMenu = async (req, res) => {
   try {
-    const menuId = req.params.menuId;
-    const itemId = req.params.itemId;
-    const shopId = req.params.shopId;
+    const { itemId, shopId } = req.params;
 
-    const checkForShop = await Shop.findById(shopId);
-    if (!checkForShop) {
+    const shop = await Shop.findById(shopId);
+    if (!shop) {
       return res.status(404).json({ message: "Shop doesn't exist" });
     }
 
-    const { itemName } = req.body;
-
-    const menu = await Menu.findById(menuId);
+    const menu = await Menu.findOne({ shopId, "items._id": itemId });
     if (!menu) {
-      return res.status(404).json({ message: "Menu not found" });
+      return res
+        .status(404)
+        .json({ message: "Menu not found or item does not exist in any menu" });
     }
 
+    const { itemName, itemDescription, price, category, picture } = req.body;
     const duplicateItem = menu.items.find(
       (item) => item.itemName === itemName && item._id.toString() !== itemId
     );
@@ -163,14 +162,14 @@ export const updateMenu = async (req, res) => {
     }
 
     const updatedMenu = await Menu.findOneAndUpdate(
-      { _id: menuId, "items._id": itemId },
+      { shopId, "items._id": itemId },
       {
         $set: {
-          "items.$.itemName": req.body.itemName,
-          "items.$.itemDescription": req.body.itemDescription,
-          "items.$.price": req.body.price,
-          "items.$.category": req.body.category,
-          "items.$.picture": req.body.picture,
+          "items.$.itemName": itemName,
+          "items.$.itemDescription": itemDescription,
+          "items.$.price": price,
+          "items.$.category": category,
+          "items.$.picture": picture,
         },
       },
       { new: true }
@@ -196,7 +195,6 @@ export const deleteItem = async (req, res) => {
     const shopId = req.params.shopId;
     const itemId = req.params.itemId;
 
-    console.log("first");
     const checkForShop = await Shop.findById(shopId);
     if (!checkForShop) {
       return res.status(404).json({ message: "Shop doesn't exist" });

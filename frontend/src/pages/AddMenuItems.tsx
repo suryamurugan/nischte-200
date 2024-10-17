@@ -2,11 +2,11 @@ import Form from "@/components/Form";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { FC } from "react";
-import { MenuItemFields } from "@/data/menuItemFields";
 import axios from "axios";
 import { API } from "@/utils/api";
 import { toast } from "sonner";
 import { useParams, useNavigate } from "react-router-dom";
+import { ItemFields } from "@/data/ItemFields.ts";
 
 export const AddMenuItem: FC = () => {
   const { shopId } = useParams();
@@ -33,13 +33,9 @@ export const AddMenuItem: FC = () => {
     console.log("formdata: ", formData);
 
     try {
-      const response = await axios.post(
-        `${API}/api/v1/shop/${shopId}/menu`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      await axios.post(`${API}/api/v1/shop/${shopId}/menu`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       toast.success("Menu item added successfully!");
       navigate(`/shop/manage/${shopId}`);
       resetForm();
@@ -59,7 +55,7 @@ export const AddMenuItem: FC = () => {
               Add Menu Item
             </h2>
             <Form
-              fields={MenuItemFields}
+              fields={ItemFields}
               onSubmit={handleAddMenuItem}
               submitButtonText="Add Item"
             />

@@ -1,6 +1,6 @@
 import Form from "@/components/Form";
 import { FC, useEffect, useState } from "react";
-import { updateShopFields } from "@/data/UpdateItemsFields";
+import { ShopFields } from "@/data/ShopField";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { API } from "@/utils/api";
@@ -31,7 +31,7 @@ export const UpdateShop: FC = () => {
     }
   };
 
-  const handleUpdate = async (
+  const handleUpdateShop = async (
     data: Record<string, any>,
     resetForm: () => void
   ) => {
@@ -83,8 +83,8 @@ export const UpdateShop: FC = () => {
         </h2>
         {shopDetails && (
           <Form
-            fields={updateShopFields}
-            onSubmit={handleUpdate}
+            fields={ShopFields}
+            onSubmit={handleUpdateShop}
             initialData={shopDetails}
             submitButtonText="Update Shop"
           />

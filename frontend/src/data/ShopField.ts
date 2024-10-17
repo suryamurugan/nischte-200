@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const updateShopFields = [
+export const ShopFields = [
   {
     name: "shopName",
     label: "Shop Name",
@@ -22,7 +22,7 @@ export const updateShopFields = [
   {
     name: "contactNo",
     label: "Contact No",
-    type: "tel",
+    type: "text",
     validation: z
       .string()
       .regex(/^\d{10}$/, { message: "Contact number must be 10 digits" }),
