@@ -1,7 +1,6 @@
 # NISCHTE
 
-Nischte is loyality platform, based on the loyality amongst the customer and owner. There is a win-win situtaion for both them, where customer get discounts on their order and owner gets loyal
-customer.
+Nischte is a loyalty platform built on fostering loyalty between customers and business owners. It creates a win-win scenario, where customers receive discounts on their orders and owners benefit from having loyal customers. Business owners have the ability to manage and run their own loyalty programs.
 
 ## SCHEMA
 

@@ -8,6 +8,11 @@ const shopSchema = new Schema(
       index: true,
       trim: true,
     },
+    email: {
+      type: String,
+      unique: true,
+      required: [true, "Make sure to add the shop details."],
+    },
     address: {
       type: String,
       required: [true, "Make sure to add the shop address"],
@@ -18,9 +23,15 @@ const shopSchema = new Schema(
       required: [true, "Make to add the contact number"],
       unique: true,
     },
+
+    // required true
     picture: {
       type: String,
-      required: [true, "Make sure to add the shop picture"],
+      required: [false, "Make sure to add the shop picture"],
+    },
+    ownerId: {
+      type: String,
+      required: [true, "Owner id is required"],
     },
   },
   { timestamps: true }

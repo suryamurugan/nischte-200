@@ -1,15 +1,23 @@
 import { Shop } from "../models/shop.model.js";
+import { uploadFile } from "../service/minio.service.js";
 
 export const createShop = async (req, res) => {
   try {
-    const { shopName, address, contactNo, picture } = req.body;
+    const { shopName, address, contactNo, ownerId, email } = req.body;
+
+    const pictureUrl = await uploadFile(req.file);
+
     const newShop = new Shop({
       shopName,
+      email,
       address,
       contactNo,
-      picture,
+      picture: pictureUrl,
+      ownerId,
     });
+
     const savedShop = await newShop.save();
+
     res.status(201).json({
       message: "Shop created successfully!",
       shop: savedShop,
@@ -22,6 +30,35 @@ export const createShop = async (req, res) => {
   }
 };
 
+export const getShops = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || null;
+    const query = limit ? Shop.find().limit(limit) : Shop.find();
+
+    const shops = await query;
+    res.status(200).json(shops);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get the shops",
+    });
+  }
+};
+
+// Return all the shop of particular owner
+export const getAllOwnerShops = async (req, res) => {
+  try {
+    const ownerId = req.params.ownerId;
+    const shops = await Shop.find({ ownerId });
+    res.status(200).json(shops);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get shop details",
+      error: error.message,
+    });
+  }
+};
+
+// Return particular shop
 export const getShop = async (req, res) => {
   try {
     const shopId = req.params.id;

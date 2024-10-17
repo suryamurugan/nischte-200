@@ -1,15 +1,13 @@
-// This menu controller is for shop owner
 import { Menu } from "../models/menu.models.js";
 import { Shop } from "../models/shop.model.js";
+import { uploadFile } from "../service/minio.service.js";
 
 export const createMenu = async (req, res) => {
   try {
     const shopId = req.params.shopId;
-    const { itemName, itemDescription, price, category, picture, offerId } =
-      req.body;
+    const { itemName, itemDescription, price, offerId } = req.body;
 
     const checkForShop = await Shop.findById(shopId);
-
     if (!checkForShop) {
       throw new Error("Shop doesn't exist");
     }
@@ -25,25 +23,33 @@ export const createMenu = async (req, res) => {
         throw new Error("Item name already exists");
       }
 
+      let pictureUrl = null;
+      if (req.file) {
+        pictureUrl = await uploadFile(req.file);
+      }
+
       menu.items.push({
         itemName,
         itemDescription,
         price,
-        category,
-        picture,
+        picture: pictureUrl,
         offerId,
       });
       const updatedMenu = await menu.save();
       res.status(200).json(updatedMenu);
     } else {
+      let pictureUrl = null;
+      if (req.file) {
+        pictureUrl = await uploadFile(req.file);
+      }
+
       const newMenu = new Menu({
         items: [
           {
             itemName,
             itemDescription,
             price,
-            category,
-            picture,
+            picture: pictureUrl,
             offerId,
           },
         ],
@@ -61,27 +67,22 @@ export const createMenu = async (req, res) => {
   }
 };
 
-//Gets a particular menu of a shop
 export const getMenuItem = async (req, res) => {
   try {
-    const menuId = req.params.menuId;
-    const itemId = req.params.itemId;
-    const menu = await Menu.findById(menuId);
+    const { itemId } = req.params;
+
+    const menu = await Menu.findOne({ "items._id": itemId }, { "items.$": 1 });
 
     if (!menu) {
-      throw new Error("Menu not found");
+      return res.status(404).json({ message: "Menu or item not found" });
     }
 
-    const item = menu.items.id(itemId);
-
-    if (!item) {
-      throw new Error("Item not found");
-    }
+    const item = menu.items[0];
 
     res.status(200).json(item);
   } catch (error) {
     res.status(500).json({
-      message: "Failed to get a particular menu",
+      message: "Failed to get the menu item",
       error: error.message,
     });
   }
@@ -111,22 +112,49 @@ export const getAllMenuOfShop = async (req, res) => {
   }
 };
 
+export const getXitems = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit);
+    const menus = await Menu.find();
+
+    const allItems = menus.reduce((acc, menu) => {
+      return acc.concat(menu.items);
+    }, []);
+
+    const shuffledItems = allItems.sort(() => 0.5 - Math.random());
+
+    const randomItems = shuffledItems.slice(0, limit);
+
+    res.status(200).json(randomItems);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to get the menu",
+      error: error.message,
+    });
+  }
+};
+
 export const updateMenu = async (req, res) => {
   try {
-    const menuId = req.params.menuId;
-    const itemId = req.params.itemId;
-    const shopId = req.params.shopId;
+    const { itemId, shopId } = req.params;
 
-    const checkForShop = await Shop.findById(shopId);
-    if (!checkForShop) {
+    const shop = await Shop.findById(shopId);
+    if (!shop) {
       return res.status(404).json({ message: "Shop doesn't exist" });
     }
 
-    const { itemName } = req.body;
-
-    const menu = await Menu.findById(menuId);
+    const menu = await Menu.findOne({ shopId, "items._id": itemId });
     if (!menu) {
-      return res.status(404).json({ message: "Menu not found" });
+      return res
+        .status(404)
+        .json({ message: "Menu not found or item does not exist in any menu" });
+    }
+
+    const { itemName, itemDescription, price, category } = req.body;
+
+    let pictureUrl;
+    if (req.file) {
+      pictureUrl = await uploadFile(req.file);
     }
 
     const duplicateItem = menu.items.find(
@@ -139,16 +167,21 @@ export const updateMenu = async (req, res) => {
         .json({ message: "Item name already exists in this shop's menu" });
     }
 
+    const updateFields = {
+      "items.$.itemName": itemName,
+      "items.$.itemDescription": itemDescription,
+      "items.$.price": price,
+      "items.$.category": category,
+    };
+
+    if (pictureUrl) {
+      updateFields["items.$.picture"] = pictureUrl;
+    }
+
     const updatedMenu = await Menu.findOneAndUpdate(
-      { _id: menuId, "items._id": itemId },
+      { shopId, "items._id": itemId },
       {
-        $set: {
-          "items.$.itemName": req.body.itemName,
-          "items.$.itemDescription": req.body.itemDescription,
-          "items.$.price": req.body.price,
-          "items.$.category": req.body.category,
-          "items.$.picture": req.body.picture,
-        },
+        $set: updateFields,
       },
       { new: true }
     );
