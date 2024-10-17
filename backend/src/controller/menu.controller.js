@@ -150,7 +150,13 @@ export const updateMenu = async (req, res) => {
         .json({ message: "Menu not found or item does not exist in any menu" });
     }
 
-    const { itemName, itemDescription, price, category, picture } = req.body;
+    const { itemName, itemDescription, price, category } = req.body;
+
+    let pictureUrl;
+    if (req.file) {
+      pictureUrl = await uploadFile(req.file);
+    }
+
     const duplicateItem = menu.items.find(
       (item) => item.itemName === itemName && item._id.toString() !== itemId
     );
@@ -161,16 +167,21 @@ export const updateMenu = async (req, res) => {
         .json({ message: "Item name already exists in this shop's menu" });
     }
 
+    const updateFields = {
+      "items.$.itemName": itemName,
+      "items.$.itemDescription": itemDescription,
+      "items.$.price": price,
+      "items.$.category": category,
+    };
+
+    if (pictureUrl) {
+      updateFields["items.$.picture"] = pictureUrl;
+    }
+
     const updatedMenu = await Menu.findOneAndUpdate(
       { shopId, "items._id": itemId },
       {
-        $set: {
-          "items.$.itemName": itemName,
-          "items.$.itemDescription": itemDescription,
-          "items.$.price": price,
-          "items.$.category": category,
-          "items.$.picture": picture,
-        },
+        $set: updateFields,
       },
       { new: true }
     );

@@ -13,7 +13,7 @@ interface Item {
   itemName: string;
   itemDescription: string;
   offerId?: string;
-  picture: string;
+  picture?: string;
   price: number;
 }
 
@@ -60,6 +60,10 @@ export const UpdateMenu: FC = () => {
         formData.append(key, String(data[key]));
       }
     });
+
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     try {
       const res = await axios.patch(
