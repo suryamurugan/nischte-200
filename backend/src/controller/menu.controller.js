@@ -196,6 +196,7 @@ export const deleteItem = async (req, res) => {
     const shopId = req.params.shopId;
     const itemId = req.params.itemId;
 
+    console.log("first");
     const checkForShop = await Shop.findById(shopId);
     if (!checkForShop) {
       return res.status(404).json({ message: "Shop doesn't exist" });
