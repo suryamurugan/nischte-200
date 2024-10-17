@@ -1,45 +1,79 @@
-import { z } from "zod";
 import Form from "@/components/Form";
-import { FC } from "react";
-export const UpdateShop: FC = ({ existingShopData }) => {
-  const fields = [
-    {
-      name: "name",
-      label: "Shop Name",
-      type: "text",
-      validation: z.string().min(1, { message: "Shop name is required" }),
-    },
-    {
-      name: "email",
-      label: "Email",
-      type: "email",
-      validation: z.string().email({ message: "Invalid email address" }),
-    },
-    {
-      name: "address",
-      label: "Address",
-      type: "text",
-      validation: z.string().min(1, { message: "Address is required" }),
-    },
-    {
-      name: "contact",
-      label: "Contact No",
-      type: "tel",
-      validation: z
-        .string()
-        .regex(/^\d{10}$/, { message: "Contact number must be 10 digits" }),
-    },
-    {
-      name: "picture",
-      label: "Picture",
-      type: "file",
-      validation: z.any().optional(),
-    },
-  ];
+import { FC, useEffect, useState } from "react";
+import { updateShopFields } from "@/data/UpdateItemsFields";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { API } from "@/utils/api";
+import { useUser } from "@clerk/clerk-react";
+import { toast } from "sonner";
 
-  const handleUpdate = (data: object) => {
-    console.log("Updated details:", data);
+interface Shop {
+  _id: string;
+  shopName: string;
+  address: string;
+  contactNo: string;
+  picture?: string;
+  ownerId: string;
+}
+
+export const UpdateShop: FC = () => {
+  const { user } = useUser();
+  const { shopId } = useParams();
+  const navigate = useNavigate();
+  const [shopDetails, setShopDetails] = useState<Shop>();
+
+  const fetchShopDetails = async () => {
+    try {
+      const res = await axios.get(`${API}/api/v1/shop/${shopId}`);
+      setShopDetails(res?.data);
+    } catch (error) {
+      toast.error("Failed to fetch shop details.");
+    }
   };
+
+  const handleUpdate = async (
+    data: Record<string, any>,
+    resetForm: () => void
+  ) => {
+    const ownerId = user?.id;
+
+    const formData = new FormData();
+
+    if (ownerId) {
+      formData.append("ownerId", ownerId);
+    }
+
+    Object.keys(data).forEach((key) => {
+      if (key === "picture" && data[key] instanceof File) {
+        formData.append(key, data[key]);
+      } else {
+        formData.append(key, String(data[key]));
+      }
+    });
+
+    try {
+      await axios.patch(`${API}/api/v1/shop/${shopId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Shop details updated successfully!");
+      resetForm();
+      navigate(`/shop/manage/${shopId}`);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          `Failed to update shop details: ${
+            error.response?.data?.message || error.message
+          }`
+        );
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchShopDetails();
+  }, [shopId]);
 
   return (
     <div className="min-h-screen flex justify-center items-center">
@@ -47,12 +81,14 @@ export const UpdateShop: FC = ({ existingShopData }) => {
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Update Your Shop
         </h2>
-        <Form
-          fields={fields}
-          onSubmit={handleUpdate}
-          initialData={existingShopData}
-          submitButtonText="Update Shop"
-        />
+        {shopDetails && (
+          <Form
+            fields={updateShopFields}
+            onSubmit={handleUpdate}
+            initialData={shopDetails}
+            submitButtonText="Update Shop"
+          />
+        )}
       </div>
     </div>
   );

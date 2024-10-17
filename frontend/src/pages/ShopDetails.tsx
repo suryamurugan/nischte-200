@@ -150,7 +150,7 @@ export const ShopDetails: FC = () => {
                   </Button>
                 </Link>
 
-                <Link to="/shop/update">
+                <Link to={`/shop/update/${shopId}`}>
                   <Button className="space-x-2">
                     <FaPen size={18} /> <p>Shop</p>
                   </Button>

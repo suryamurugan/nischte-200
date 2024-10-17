@@ -6,10 +6,11 @@ import { MenuItemFields } from "@/data/menuItemFields";
 import axios from "axios";
 import { API } from "@/utils/api";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 export const AddMenuItem: FC = () => {
   const { shopId } = useParams();
+  const navigate = useNavigate();
 
   const handleAddMenuItem = async (
     data: Record<string, any>,
@@ -40,6 +41,7 @@ export const AddMenuItem: FC = () => {
         }
       );
       toast.success("Menu item added successfully!");
+      navigate(`/shop/manage/${shopId}`);
       resetForm();
     } catch (error: any) {
       console.error("Error adding menu item:", error);

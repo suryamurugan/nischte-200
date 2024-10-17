@@ -74,6 +74,7 @@ export const getShop = async (req, res) => {
 
 export const updateShop = async (req, res) => {
   try {
+    console.log("hehe", req.body);
     const shopId = req.params.id;
     const updatedShop = await Shop.findByIdAndUpdate(
       shopId,
@@ -95,7 +96,6 @@ export const updateShop = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    console.log("heh");
     await Shop.findByIdAndDelete(req.params.id);
     // Todo: Delete corresponding sharing fields
     res.status(200).json({

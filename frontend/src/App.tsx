@@ -63,7 +63,7 @@ function App() {
               }
             />
             <Route
-              path="update"
+              path="update/:shopId"
               element={
                 <ProtectedRoute>
                   <UpdateShop />
