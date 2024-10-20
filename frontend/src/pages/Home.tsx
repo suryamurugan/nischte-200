@@ -47,6 +47,7 @@ interface Item {
   picture: string;
   offerId?: string;
   price: number;
+  shopId: string;
 }
 
 export const Home = () => {
@@ -66,6 +67,7 @@ export const Home = () => {
   const fetchItemsDetails = async () => {
     try {
       const res = await axios.get(`${API}/api/v1/shop/menu?limit=4`);
+      console.log("yy", res.data);
       setItems(res.data);
     } catch (error) {
       console.log("Failed to fetch the shop details", error);
@@ -80,6 +82,19 @@ export const Home = () => {
     }
   };
 
+  const handleItemClick = (itemId: string, shopId: string) => {
+    try {
+      navigate(`/shop/${shopId}/menu/${itemId}`);
+    } catch (error) {
+      console.log("Failed to get item details");
+    }
+  };
+
+  const handleItemViewMore = () => {};
+
+  const handleShopViewMore = () => {
+    navigate("/shops");
+  };
   useEffect(() => {
     fetchShopDetails();
     fetchItemsDetails();
@@ -117,7 +132,12 @@ export const Home = () => {
 
           <div className="flex justify-between">
             <h1 className="font-extrabold text-black mb-4 text-2xl">Shops</h1>
-            <p>View more</p>
+            <p
+              className="text-blue-700 cursor-pointer"
+              onClick={handleShopViewMore}
+            >
+              View more
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4 ">
             {shops &&
@@ -158,13 +178,18 @@ export const Home = () => {
               <h1 className="font-extrabold text-black mb-4 text-2xl">
                 New In Store
               </h1>
-              <p>View more</p>
+              <p className="text-blue-700" onClick={handleItemViewMore}>
+                View more
+              </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4 ">
               {items &&
                 items.length > 0 &&
                 items.map((item) => (
-                  <Card className="cursor-pointer w-full h-full">
+                  <Card
+                    className="cursor-pointer w-full h-full"
+                    onClick={() => handleItemClick(item._id, item.shopId)}
+                  >
                     <img
                       src={item?.picture}
                       alt={item?.itemName}
