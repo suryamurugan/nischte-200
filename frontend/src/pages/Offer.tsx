@@ -80,7 +80,6 @@ export const Offer: FC = () => {
   const fetchOffer = async () => {
     try {
       const res = await axios.get(`${API}/api/v1/offer/${shopId}/${menuId}`);
-      // console.log("res", res);
       setOffer(res.data.offers[0].offers);
       console.log(res.data.offers[0].offers);
     } catch (error) {
@@ -88,7 +87,9 @@ export const Offer: FC = () => {
     }
   };
 
-  const handleOfferUpdate = (offerId: string): void => {};
+  const handleOfferUpdate = (offerId: string): void => {
+    navigate(`/shop/${shopId}/menu/${menuId}/offer/${offerId}/update`);
+  };
 
   const handleDeleteOffer = async (offerId: string): Promise<void> => {
     try {

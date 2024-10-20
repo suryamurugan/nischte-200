@@ -15,6 +15,7 @@ import { AddMenuItem } from "./pages/AddMenuItems";
 import { MenuDetails } from "./pages/MenuDetails";
 import { Offer } from "./pages/Offer";
 import { UpdateMenu } from "./pages/UpdateMenu";
+import { UpdateOffer } from "./pages/UpdateOffer";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -38,6 +39,7 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
+
           <Route path="/shop">
             <Route
               path="manage"
@@ -64,6 +66,14 @@ function App() {
               }
             />
             <Route
+              path=":shopId/menu/:menuId/offer/:offerId/update"
+              element={
+                <ProtectedRoute>
+                  <UpdateOffer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path=":shopId/menu/:menuId/offer"
               element={
                 <ProtectedRoute>
@@ -71,6 +81,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="update/:shopId"
               element={

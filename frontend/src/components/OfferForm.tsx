@@ -23,12 +23,14 @@ interface OfferFormProps {
   fields: OfferField[];
   onSubmit: (data: Record<string, any>, resetForm: () => void) => void;
   initialData?: Record<string, any>;
+  isUpdate?: boolean;
 }
 
 const OfferForm: React.FC<OfferFormProps> = ({
   fields,
   onSubmit,
   initialData = {},
+  isUpdate = false,
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -72,6 +74,8 @@ const OfferForm: React.FC<OfferFormProps> = ({
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
     fields.forEach((field) => {
+      if (isUpdate && field.name === "offerType.name") return;
+
       if (field.type !== "checkbox" && !formData[field.name]) {
         newErrors[field.name] = `${field.label} is required`;
       }
@@ -86,6 +90,8 @@ const OfferForm: React.FC<OfferFormProps> = ({
   };
 
   const shouldRenderField = (field: OfferField): boolean => {
+    if (isUpdate && field.name === "offerType.name") return false;
+
     if (!field.dependsOn) return true;
     if (field.dependsOn === "offerType.name") {
       switch (selectedOfferType) {
@@ -168,7 +174,7 @@ const OfferForm: React.FC<OfferFormProps> = ({
           );
         })}
         <Button type="submit" className="w-full mt-4">
-          Submit
+          {isUpdate ? "Update" : "Submit"}
         </Button>
       </form>
     </div>

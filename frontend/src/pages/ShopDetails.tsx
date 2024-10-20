@@ -326,13 +326,15 @@ export const ShopDetails: FC = () => {
                     <p>
                       <span className="font-bold">Price: </span>: {item?.price}
                     </p>
-                    <Button
-                      className="space-x-2"
-                      onClick={() => handleOfferBtnClick(item._id)}
-                    >
-                      <MdOutlineManageHistory size={18} />
-                      <p>Offers</p>
-                    </Button>
+                    {user?.id === shop?.ownerId && isManagePage && (
+                      <Button
+                        className="space-x-2"
+                        onClick={() => handleOfferBtnClick(item._id)}
+                      >
+                        <MdOutlineManageHistory size={18} />
+                        <p>Offers</p>
+                      </Button>
+                    )}
                   </CardFooter>
                 </Card>
               ))}
