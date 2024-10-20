@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { ifError } from "assert";
+import { Button } from "@/components/ui/button";
 
 const HeroImages = [
   { name: "Banner1", path: HeroImage, id: 1 },
@@ -188,7 +189,10 @@ export const Home = () => {
                 items.map((item) => (
                   <Card
                     className="cursor-pointer w-full h-full"
-                    onClick={() => handleItemClick(item._id, item.shopId)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleItemClick(item._id, item.shopId);
+                    }}
                   >
                     <img
                       src={item?.picture}
@@ -203,10 +207,32 @@ export const Home = () => {
                     <CardContent>
                       <p className="text-sm">{item?.itemDescription}</p>
                     </CardContent>
-                    <CardFooter>
-                      <p>
-                        <span className="font-bold">Price:</span> {item?.price}
+                    <CardFooter className="flex justify-between  items-center">
+                      <p className="font-bold">
+                        {/* <span className="font-bold"></span> */}
+                        &#8377;{item?.price}
                       </p>
+                      <div className="flex items-center space-x-2">
+                        <select
+                          id="quantity"
+                          // value={quantity}
+                          // onChange={handleQuantityChange}
+                          className="px-2 py-1 border rounded-md"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {[...Array(10).keys()].map((num) => (
+                            <option key={num + 1} value={num + 1}>
+                              {num + 1}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex justify-start">
+                        <Button onClick={(e) => e.stopPropagation()}>
+                          Add to Cart
+                        </Button>
+                      </div>
                     </CardFooter>
                   </Card>
                 ))}

@@ -320,12 +320,35 @@ export const ShopDetails: FC = () => {
                     </p>
                   </CardContent>
                   <CardFooter
-                    className="flex justify-between"
+                    className="flex justify-between items-center"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <p>
-                      <span className="font-bold">Price: </span>: {item?.price}
+                    <p className="font-bold">
+                      {/* <span className="font-bold"></span> */}
+                      &#8377;{item?.price}
                     </p>
+                    <div className="flex items-center space-x-2">
+                      <select
+                        id="quantity"
+                        // value={quantity}
+                        // onChange={handleQuantityChange}
+                        className="px-2 py-1 border rounded-md"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {[...Array(10).keys()].map((num) => (
+                          <option key={num + 1} value={num + 1}>
+                            {num + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="flex justify-start">
+                      <Button onClick={(e) => e.stopPropagation()}>
+                        Add to Cart
+                      </Button>
+                    </div>
+
                     {user?.id === shop?.ownerId && isManagePage && (
                       <Button
                         className="space-x-2"
