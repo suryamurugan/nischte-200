@@ -24,7 +24,10 @@ import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { API } from "@/utils/api";
 import { useUser } from "@clerk/clerk-react";
-import { MdOutlineAddCircleOutline } from "react-icons/md";
+import {
+  MdOutlineAddCircleOutline,
+  MdOutlineManageHistory,
+} from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Navbar } from "@/components/Navbar";
@@ -121,6 +124,14 @@ export const ShopDetails: FC = () => {
   const handleItemUpdate = (menuId: string) => {
     console.log("hey");
     navigate(`/shop/${shopId}/menu/${menuId}/update`);
+  };
+
+  const handleOfferBtnClick = async (menuId: string) => {
+    try {
+      navigate(`/shop/${shopId}/menu/${menuId}/offer`);
+    } catch (error) {
+      console.log("Failed to handle offer click");
+    }
   };
 
   useEffect(() => {
@@ -308,10 +319,20 @@ export const ShopDetails: FC = () => {
                       </span>
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter
+                    className="flex justify-between"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <p>
                       <span className="font-bold">Price: </span>: {item?.price}
                     </p>
+                    <Button
+                      className="space-x-2"
+                      onClick={() => handleOfferBtnClick(item._id)}
+                    >
+                      <MdOutlineManageHistory size={18} />
+                      <p>Offers</p>
+                    </Button>
                   </CardFooter>
                 </Card>
               ))}

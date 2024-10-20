@@ -3,6 +3,7 @@ import { Offer } from "../models/offer.model.js";
 
 export const createOffer = async (req, res) => {
   try {
+    console.log("first");
     const { shopId, itemId, offerType, offerDescription, _isActive } = req.body;
 
     let isOfferExist = await Offer.findOne({ shopId, itemId });

@@ -6,7 +6,7 @@ import axios from "axios";
 import { API } from "@/utils/api";
 import { toast } from "sonner";
 import { useParams, useNavigate } from "react-router-dom";
-import { ItemFields } from "@/data/ItemFields.ts";
+import { ItemFields } from "@/data/ItemFields";
 
 export const AddMenuItem: FC = () => {
   const { shopId } = useParams();
@@ -29,8 +29,6 @@ export const AddMenuItem: FC = () => {
     if (data.picture) {
       formData.append("picture", data.picture[0]);
     }
-
-    console.log("formdata: ", formData);
 
     try {
       await axios.post(`${API}/api/v1/shop/${shopId}/menu`, formData, {
