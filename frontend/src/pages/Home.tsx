@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { ifError } from "assert";
+import { Button } from "@/components/ui/button";
 
 const HeroImages = [
   { name: "Banner1", path: HeroImage, id: 1 },
@@ -47,6 +48,7 @@ interface Item {
   picture: string;
   offerId?: string;
   price: number;
+  shopId: string;
 }
 
 export const Home = () => {
@@ -66,6 +68,7 @@ export const Home = () => {
   const fetchItemsDetails = async () => {
     try {
       const res = await axios.get(`${API}/api/v1/shop/menu?limit=4`);
+      console.log("yy", res.data);
       setItems(res.data);
     } catch (error) {
       console.log("Failed to fetch the shop details", error);
@@ -80,6 +83,19 @@ export const Home = () => {
     }
   };
 
+  const handleItemClick = (itemId: string, shopId: string) => {
+    try {
+      navigate(`/shop/${shopId}/menu/${itemId}`);
+    } catch (error) {
+      console.log("Failed to get item details");
+    }
+  };
+
+  const handleItemViewMore = () => {};
+
+  const handleShopViewMore = () => {
+    navigate("/shops");
+  };
   useEffect(() => {
     fetchShopDetails();
     fetchItemsDetails();
@@ -117,7 +133,12 @@ export const Home = () => {
 
           <div className="flex justify-between">
             <h1 className="font-extrabold text-black mb-4 text-2xl">Shops</h1>
-            <p>View more</p>
+            <p
+              className="text-blue-700 cursor-pointer"
+              onClick={handleShopViewMore}
+            >
+              View more
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4 ">
             {shops &&
@@ -158,13 +179,21 @@ export const Home = () => {
               <h1 className="font-extrabold text-black mb-4 text-2xl">
                 New In Store
               </h1>
-              <p>View more</p>
+              <p className="text-blue-700" onClick={handleItemViewMore}>
+                View more
+              </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4 ">
               {items &&
                 items.length > 0 &&
                 items.map((item) => (
-                  <Card className="cursor-pointer w-full h-full">
+                  <Card
+                    className="cursor-pointer w-full h-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleItemClick(item._id, item.shopId);
+                    }}
+                  >
                     <img
                       src={item?.picture}
                       alt={item?.itemName}
@@ -178,10 +207,32 @@ export const Home = () => {
                     <CardContent>
                       <p className="text-sm">{item?.itemDescription}</p>
                     </CardContent>
-                    <CardFooter>
-                      <p>
-                        <span className="font-bold">Price:</span> {item?.price}
+                    <CardFooter className="flex justify-between  items-center">
+                      <p className="font-bold">
+                        {/* <span className="font-bold"></span> */}
+                        &#8377;{item?.price}
                       </p>
+                      <div className="flex items-center space-x-2">
+                        <select
+                          id="quantity"
+                          // value={quantity}
+                          // onChange={handleQuantityChange}
+                          className="px-2 py-1 border rounded-md"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {[...Array(10).keys()].map((num) => (
+                            <option key={num + 1} value={num + 1}>
+                              {num + 1}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="flex justify-start">
+                        <Button onClick={(e) => e.stopPropagation()}>
+                          Add to Cart
+                        </Button>
+                      </div>
                     </CardFooter>
                   </Card>
                 ))}

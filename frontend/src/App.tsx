@@ -13,8 +13,9 @@ import { ShopDetails } from "./pages/ShopDetails";
 import { Toaster } from "sonner";
 import { AddMenuItem } from "./pages/AddMenuItems";
 import { MenuDetails } from "./pages/MenuDetails";
-import { Menu } from "react-pro-sidebar";
+import { Offer } from "./pages/Offer";
 import { UpdateMenu } from "./pages/UpdateMenu";
+import { UpdateOffer } from "./pages/UpdateOffer";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -38,6 +39,7 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
+
           <Route path="/shop">
             <Route
               path="manage"
@@ -63,6 +65,23 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path=":shopId/menu/:menuId/offer/:offerId/update"
+              element={
+                <ProtectedRoute>
+                  <UpdateOffer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path=":shopId/menu/:menuId/offer"
+              element={
+                <ProtectedRoute>
+                  <Offer />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="update/:shopId"
               element={

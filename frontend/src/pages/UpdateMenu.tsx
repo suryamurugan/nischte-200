@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { ItemFields } from "@/data/ItemFields.ts";
+import { ItemFields } from "@/data/ItemFields";
 import { useParams } from "react-router-dom";
 import Form from "@/components/Form";
 import { API } from "@/utils/api";

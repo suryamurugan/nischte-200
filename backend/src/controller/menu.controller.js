@@ -118,11 +118,13 @@ export const getXitems = async (req, res) => {
     const menus = await Menu.find();
 
     const allItems = menus.reduce((acc, menu) => {
-      return acc.concat(menu.items);
+      const itemsWithShop = menu.items.map((item) => ({
+        ...item.toObject(),
+        shopId: menu.shopId,
+      }));
+      return acc.concat(itemsWithShop);
     }, []);
-
     const shuffledItems = allItems.sort(() => 0.5 - Math.random());
-
     const randomItems = shuffledItems.slice(0, limit);
 
     res.status(200).json(randomItems);

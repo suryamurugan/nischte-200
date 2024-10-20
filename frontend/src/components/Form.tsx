@@ -59,9 +59,6 @@ const Form: React.FC<FormProps> = ({
             id={field.name}
             type={field.type}
             className="mt-1"
-            {...(field.type !== "file" && {
-              defaultValue: initialData[field.name],
-            })}
           />
           {errors[field.name] && (
             <p className="text-red-500 text-sm mt-1">
