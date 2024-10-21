@@ -26,6 +26,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import useEmblaCarousel from "embla-carousel-react";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 interface Item {
   _id: string;
@@ -47,6 +49,8 @@ export const MenuDetails: FC = () => {
   });
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  const { state, dispatch } = useCart();
+
   const fetchItemDetails = async () => {
     try {
       const res = await axios.get(
@@ -65,6 +69,26 @@ export const MenuDetails: FC = () => {
     } catch (error) {
       console.log("Failed to fetch the items of shop");
     }
+  };
+
+  const handleAddToCart = () => {
+    if (item) {
+      for (let i = 0; i < quantity; i++) {
+        dispatch({ type: "ADD_TO_CART", payload: item });
+      }
+
+      toast.success(`${quantity} x ${item.itemName} added to your cart`, {
+        duration: 2000,
+      });
+    }
+  };
+
+  const handleAddCarouselItemToCart = (carouselItem: Item) => {
+    dispatch({ type: "ADD_TO_CART", payload: carouselItem });
+
+    toast.success(`${quantity} x ${carouselItem.itemName} added to your cart`, {
+      duration: 2000,
+    });
   };
 
   useEffect(() => {
@@ -145,7 +169,7 @@ export const MenuDetails: FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-start mt-4">
-                  <Button>Add to Cart</Button>
+                  <Button onClick={handleAddToCart}>Add to Cart</Button>
                 </div>
               </div>
             </div>
@@ -167,7 +191,7 @@ export const MenuDetails: FC = () => {
                 items.map((item) => (
                   <CarouselItem
                     key={item?._id}
-                    className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2 "
+                    className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2"
                   >
                     <Card className="cursor-pointer w-full h-full">
                       <img
@@ -183,11 +207,17 @@ export const MenuDetails: FC = () => {
                       <CardContent>
                         <p className="text-sm">{item?.itemDescription}</p>
                       </CardContent>
-                      <CardFooter>
+                      <CardFooter className="flex justify-between items-center">
                         <p>
-                          <span className="font-bold">Price:</span>{" "}
+                          <span className="font-bold">Price:</span> $
                           {item?.price}
                         </p>
+                        <Button
+                          variant="secondary"
+                          onClick={() => handleAddCarouselItemToCart(item)}
+                        >
+                          Add to Cart
+                        </Button>
                       </CardFooter>
                     </Card>
                   </CarouselItem>
