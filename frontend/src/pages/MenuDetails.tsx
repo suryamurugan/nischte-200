@@ -177,6 +177,9 @@ export const MenuDetails: FC = () => {
         </div>
 
         {/* Display other items of shop  */}
+        <h1 className="font-extrabold text-black  mt-6 mb-3 text-2xl">
+          Other Items
+        </h1>
         <div
           className="w-full p-5"
           ref={carouselRef}
@@ -213,7 +216,6 @@ export const MenuDetails: FC = () => {
                           {item?.price}
                         </p>
                         <Button
-                          variant="secondary"
                           onClick={() => handleAddCarouselItemToCart(item)}
                         >
                           Add to Cart

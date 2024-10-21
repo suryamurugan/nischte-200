@@ -25,6 +25,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ifError } from "assert";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 const HeroImages = [
   { name: "Banner1", path: HeroImage, id: 1 },
@@ -54,7 +56,10 @@ interface Item {
 export const Home = () => {
   const [shops, setShops] = useState<Shop[]>([]);
   const [items, setItems] = useState<Item[]>([]);
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+
   const navigate = useNavigate();
+  const { dispatch } = useCart();
 
   const fetchShopDetails = async () => {
     try {
@@ -63,6 +68,21 @@ export const Home = () => {
     } catch (error) {
       console.log("Failed to fetch the shop details", error);
     }
+  };
+
+  const handleQuantityChange = (itemId: string, value: string) => {
+    setQuantities({ ...quantities, [itemId]: parseInt(value) });
+  };
+
+  const handleAddToCart = (item: Item) => {
+    const quantity = quantities[item._id] || 1;
+    for (let i = 0; i < quantity; i++) {
+      dispatch({ type: "ADD_TO_CART", payload: item });
+    }
+
+    toast.success(`${quantity} x ${item.itemName} added to your cart`, {
+      duration: 2000,
+    });
   };
 
   const fetchItemsDetails = async () => {
@@ -130,7 +150,6 @@ export const Home = () => {
           </div>
 
           {/* Display shop details  */}
-
           <div className="flex justify-between">
             <h1 className="font-extrabold text-black mb-4 text-2xl">Shops</h1>
             <p
@@ -188,6 +207,7 @@ export const Home = () => {
                 items.length > 0 &&
                 items.map((item) => (
                   <Card
+                    key={item._id}
                     className="cursor-pointer w-full h-full"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -208,15 +228,14 @@ export const Home = () => {
                       <p className="text-sm">{item?.itemDescription}</p>
                     </CardContent>
                     <CardFooter className="flex justify-between  items-center">
-                      <p className="font-bold">
-                        {/* <span className="font-bold"></span> */}
-                        &#8377;{item?.price}
-                      </p>
+                      <p className="font-bold">&#8377;{item?.price}</p>
                       <div className="flex items-center space-x-2">
                         <select
-                          id="quantity"
-                          // value={quantity}
-                          // onChange={handleQuantityChange}
+                          id={`quantity-${item._id}`}
+                          value={quantities[item._id] || 1}
+                          onChange={(e) =>
+                            handleQuantityChange(item._id, e.target.value)
+                          }
                           className="px-2 py-1 border rounded-md"
                           onClick={(e) => e.stopPropagation()}
                         >
@@ -229,7 +248,12 @@ export const Home = () => {
                       </div>
 
                       <div className="flex justify-start">
-                        <Button onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(item);
+                          }}
+                        >
                           Add to Cart
                         </Button>
                       </div>
