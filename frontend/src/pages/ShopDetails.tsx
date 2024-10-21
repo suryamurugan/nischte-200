@@ -28,10 +28,12 @@ import {
   MdOutlineAddCircleOutline,
   MdOutlineManageHistory,
 } from "react-icons/md";
-import { FaPen } from "react-icons/fa";
+import { FaMinus, FaPen, FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Input } from "@/components/ui/input";
+import { useCart } from "@/context/CartContext";
 
 interface Shop {
   _id: string;
@@ -55,7 +57,9 @@ export const ShopDetails: FC = () => {
   const [shop, setShop] = useState<Shop>();
   const [items, setItems] = useState<Item[]>([]);
   const [charLimit, setCharLimit] = useState(70);
+  const [quantities, setQuantities] = useState<{ [key: string]: string }>({});
 
+  const { dispatch } = useCart();
   const { user } = useUser();
 
   const { shopId } = useParams();
@@ -132,6 +136,55 @@ export const ShopDetails: FC = () => {
     } catch (error) {
       console.log("Failed to handle offer click");
     }
+  };
+
+  const handleQuantityChange = (itemId: string, value: string) => {
+    setQuantities({ ...quantities, [itemId]: value });
+  };
+
+  const handleUpdateQuantity = (itemId: string, newQuantity: number) => {
+    if (newQuantity < 1) {
+      setQuantities((prev) => ({ ...prev, [itemId]: "1" }));
+      return;
+    }
+    setQuantities((prev) => ({ ...prev, [itemId]: newQuantity.toString() }));
+  };
+
+  const handleQuantityBlur = (itemId: string, currentQuantity: string) => {
+    const inputValue = quantities[itemId];
+    if (!inputValue) {
+      setQuantities((prev) => ({
+        ...prev,
+        [itemId]: currentQuantity,
+      }));
+      return;
+    }
+
+    const newQuantity = parseInt(inputValue);
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      setQuantities((prev) => ({
+        ...prev,
+        [itemId]: currentQuantity,
+      }));
+      toast.error("Please enter a valid quantity");
+      return;
+    }
+
+    handleUpdateQuantity(itemId, newQuantity);
+  };
+
+  const handleAddToCart = (item: Item) => {
+    const quantity = parseInt(quantities[item._id] || "1");
+    for (let i = 0; i < quantity; i++) {
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: { ...item, price: parseFloat(item.price) },
+      });
+    }
+
+    toast.success(`${quantity} x ${item.itemName} added to your cart`, {
+      duration: 2000,
+    });
   };
 
   useEffect(() => {
@@ -323,32 +376,68 @@ export const ShopDetails: FC = () => {
                     className="flex justify-between items-center"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <p className="font-bold">
-                      {/* <span className="font-bold"></span> */}
-                      &#8377;{item?.price}
-                    </p>
-                    <div className="flex items-center space-x-2">
-                      <select
-                        id="quantity"
-                        // value={quantity}
-                        // onChange={handleQuantityChange}
-                        className="px-2 py-1 border rounded-md"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {[...Array(10).keys()].map((num) => (
-                          <option key={num + 1} value={num + 1}>
-                            {num + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="flex justify-start">
-                      <Button onClick={(e) => e.stopPropagation()}>
-                        Add to Cart
-                      </Button>
-                    </div>
-
+                    <p className="font-bold">&#8377;{item?.price}</p>
+                    {!isManagePage && (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUpdateQuantity(
+                                item._id,
+                                parseInt(quantities[item._id] || "1") - 1
+                              );
+                            }}
+                          >
+                            <FaMinus className="h-4 w-4" />
+                          </Button>
+                          <Input
+                            type="text"
+                            value={quantities[item._id] || "1"}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleQuantityChange(item._id, e.target.value);
+                            }}
+                            onBlur={(e) => {
+                              e.stopPropagation();
+                              handleQuantityBlur(
+                                item._id,
+                                quantities[item._id] || "1"
+                              );
+                            }}
+                            className="w-16 text-center"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUpdateQuantity(
+                                item._id,
+                                parseInt(quantities[item._id] || "1") + 1
+                              );
+                            }}
+                          >
+                            <FaPlus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="flex justify-start">
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToCart(item);
+                            }}
+                          >
+                            Add to Cart
+                          </Button>
+                        </div>
+                      </>
+                    )}
                     {user?.id === shop?.ownerId && isManagePage && (
                       <Button
                         className="space-x-2"
