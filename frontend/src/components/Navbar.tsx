@@ -5,7 +5,7 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdCart } from "react-icons/io";
 import { Button } from "./ui/button";
@@ -13,9 +13,13 @@ import { Search } from "./Search";
 import { Sidebar } from "./Sidebar";
 
 import { useUser } from "@clerk/clerk-react";
+import { useCart } from "@/context/CartContext";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const { state } = useCart();
 
   const [search, setSearch] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -35,8 +39,12 @@ export const Navbar: React.FC = () => {
     if (displaySearchButtonOnlyFor.includes(location.pathname)) {
       return true;
     }
-    const regex = /^\/shop\/[^/]+\/menu\/[^/]+$/; // Regex to match dynamic paths
+    const regex = /^\/shop\/[^/]+\/menu\/[^/]+$/;
     return regex.test(location.pathname);
+  };
+
+  const handleCartClick = () => {
+    navigate("/cart");
   };
 
   return (
@@ -76,8 +84,13 @@ export const Navbar: React.FC = () => {
             ) : null}
           </div>
 
-          <div>
+          <div className="relative cursor-pointer" onClick={handleCartClick}>
             <IoMdCart size={29} />
+            {state.items.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                {state.items.length}
+              </span>
+            )}
           </div>
 
           <div>
