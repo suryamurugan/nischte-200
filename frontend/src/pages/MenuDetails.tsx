@@ -181,7 +181,6 @@ export const MenuDetails: FC = () => {
   };
 
   const handleItemClickOnCarousel = (itemId: string): void => {
-    console.log("first");
     try {
       navigate(`/shop/${shopId}/menu/${itemId}`);
     } catch (error) {
