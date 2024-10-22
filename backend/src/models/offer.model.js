@@ -51,7 +51,7 @@ const offerSchema = new Schema(
     },
     itemId: {
       type: Schema.Types.ObjectId,
-      ref: "Item",
+      ref: "Menu",
       required: [true, "Make sure to add the item"],
     },
     offers: [

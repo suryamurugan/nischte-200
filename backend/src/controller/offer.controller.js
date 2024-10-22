@@ -1,9 +1,10 @@
 import { Menu } from "../models/menu.models.js";
 import { Offer } from "../models/offer.model.js";
+import { Order } from "../models/order.model.js";
+import mongoose from "mongoose";
 
 export const createOffer = async (req, res) => {
   try {
-    console.log("first");
     const { shopId, itemId, offerType, offerDescription, _isActive } = req.body;
 
     let isOfferExist = await Offer.findOne({ shopId, itemId });
@@ -89,6 +90,135 @@ export const getAllOffers = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Unable to retrieve offers",
+      error: error.message,
+    });
+  }
+};
+
+export const offerWithOutMetaData = async (req, res) => {
+  try {
+    const offerIds = req.query.offerId
+      ? req.query.offerId.split(",").map((id) => id.trim())
+      : [];
+
+    const validOfferIds = offerIds.filter((id) => mongoose.isValidObjectId(id));
+
+    if (validOfferIds.length === 0) {
+      return res.status(400).json({ message: "No valid offer IDs provided." });
+    }
+
+    const offers = await Offer.find({
+      "offers._id": { $in: validOfferIds },
+      "offers._isActive": true,
+    });
+
+    if (offers.length === 0) {
+      return res.status(404).json({ message: "No offers found." });
+    }
+
+    const itemIds = [...new Set(offers.map((doc) => doc.itemId))];
+
+    const menuItems = await Menu.find(
+      { "items._id": { $in: itemIds } },
+      { "items.$": 1 }
+    );
+
+    const itemNameMap = menuItems.reduce((acc, menu) => {
+      if (menu.items && menu.items[0]) {
+        acc[menu.items[0]._id.toString()] = menu.items[0].itemName;
+      }
+      return acc;
+    }, {});
+
+    const matchingOffers = offers.flatMap((doc) =>
+      doc.offers
+        .filter(
+          (offer) =>
+            validOfferIds.includes(offer._id.toString()) && offer._isActive
+        )
+        .map((offer) => ({
+          itemId: doc.itemId,
+          itemName: itemNameMap[doc.itemId] || null,
+          shopId: doc.shopId,
+          offerType: offer.offerType,
+          offerDescription: offer.offerDescription,
+          isActive: offer._isActive,
+        }))
+    );
+
+    if (matchingOffers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No matching active offers found." });
+    }
+
+    res.status(200).json({ offers: matchingOffers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while fetching offers.",
+      error: error.message,
+    });
+  }
+};
+
+const checkOfferEligibility = async (offer, visitCount) => {
+  return offer.offerDescription.numberOfVisits <= visitCount;
+};
+
+export const isOfferEligible = async (req, res) => {
+  try {
+    const { offerIds } = req.body;
+
+    const applicableOffers = [];
+
+    const objectIds = offerIds.map((id) => new mongoose.Types.ObjectId(id));
+
+    const allOffersData = await Offer.find(
+      { "offers._id": { $in: objectIds } },
+      { offers: 1, shopId: 1 }
+    );
+
+    // console.log("all offer data ", allOffersData);
+    for (const offerData of allOffersData) {
+      const matchingOffers = offerData.offers.filter((offer) =>
+        objectIds.some((id) => id.equals(offer._id))
+      );
+
+      // console.log("maching", matchingOffers);
+
+      for (const matchedOffer of matchingOffers) {
+        const visitCount = await Order.countDocuments({
+          "items.shopId": offerData.shopId,
+          // deliveryStatus: "Successful",
+        });
+
+        const isEligible = await checkOfferEligibility(
+          matchedOffer,
+          visitCount
+        );
+
+        if (isEligible) {
+          applicableOffers.push({
+            offerId: matchedOffer._id,
+            // offerType: matchedOffer.offerType,
+            // offerDescription: matchedOffer.offerDescription,
+            // shopId: offerData.shopId,
+            // visitCount,
+          });
+        }
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      applicableOffers,
+    });
+  } catch (error) {
+    console.error("Error processing offers:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to process the offers",
       error: error.message,
     });
   }
