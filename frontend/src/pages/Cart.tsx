@@ -8,6 +8,8 @@ import { Navbar } from "@/components/Navbar";
 import axios from "axios";
 import { API } from "@/utils/api";
 import { Card } from "@/components/ui/card";
+import { CartItem } from "@/types/Cart";
+import { Footer } from "@/components/Footer";
 
 interface OfferType {
   name: string;
@@ -27,6 +29,13 @@ interface Offer {
   _isActive: boolean;
   offerDescription: OfferDescription;
   _id: string;
+}
+
+interface PriceDetails {
+  originalPrice: number;
+  finalPrice: number;
+  appliedOffer?: Offer;
+  savings: number;
 }
 
 export const Cart = () => {
@@ -130,6 +139,108 @@ export const Cart = () => {
     } finally {
       setIsLoadingOffers(false);
     }
+  };
+
+  const calculateItemPrice = (
+    item: CartItem,
+    offers: Offer[]
+  ): PriceDetails => {
+    if (!item.offerId || !offers || offers.length === 0) {
+      return {
+        originalPrice: item.price * item.quantity,
+        finalPrice: item.price * item.quantity,
+        savings: 0,
+      };
+    }
+
+    const itemOffers = offers.filter(
+      (offer) => item.offerId?.includes(offer._id) && offer._isActive
+    );
+
+    if (itemOffers.length === 0) {
+      return {
+        originalPrice: item.price * item.quantity,
+        finalPrice: item.price * item.quantity,
+        savings: 0,
+      };
+    }
+
+    let bestPrice: PriceDetails = {
+      originalPrice: item.price * item.quantity,
+      finalPrice: item.price * item.quantity,
+      savings: 0,
+    };
+
+    for (const offer of itemOffers) {
+      const { offerDescription } = offer;
+      let currentPrice = item.price * item.quantity;
+
+      if (
+        offerDescription.minOrder &&
+        item.quantity < offerDescription.minOrder
+      ) {
+        continue;
+      }
+
+      if (offerDescription.discountRate) {
+        currentPrice =
+          item.price *
+          item.quantity *
+          (1 - offerDescription.discountRate / 100);
+      }
+
+      if (
+        offerDescription.plusOffers &&
+        offerDescription.numberOfVisits &&
+        item.quantity >= offerDescription.numberOfVisits
+      ) {
+        const sets = Math.floor(
+          item.quantity / offerDescription.numberOfVisits
+        );
+        const freeItems = sets * offerDescription.plusOffers;
+        const paidItems = item.quantity - freeItems;
+        currentPrice = paidItems * item.price;
+      }
+
+      if (offerDescription.specialOccasionDate) {
+        const today = new Date();
+        const occasionDate = new Date(offerDescription.specialOccasionDate);
+        if (
+          today.toDateString() === occasionDate.toDateString() &&
+          offerDescription.discountRate
+        ) {
+          currentPrice =
+            item.price *
+            item.quantity *
+            (1 - offerDescription.discountRate / 100);
+        }
+      }
+
+      if (currentPrice < bestPrice.finalPrice) {
+        bestPrice = {
+          originalPrice: item.price * item.quantity,
+          finalPrice: currentPrice,
+          appliedOffer: offer,
+          savings: item.price * item.quantity - currentPrice,
+        };
+      }
+    }
+
+    return bestPrice;
+  };
+
+  const calculateCartTotal = () => {
+    return state.items.reduce((total, item) => {
+      const priceDetails = calculateItemPrice(item, offerDetails);
+      return total + priceDetails.finalPrice;
+    }, 0);
+  };
+
+  const calculateTotalSavings = () => {
+    return state.items.reduce((savings, item) => {
+      const priceDetails = calculateItemPrice(item, offerDetails);
+      return savings + priceDetails.savings;
+    }, 0);
   };
 
   useEffect(() => {
@@ -272,25 +383,61 @@ export const Cart = () => {
 
           {/* TODO: Fix display items with their details */}
           <div className="lg:w-1/3">
-            <div className="border p-4 rounded">
+            <Card className="p-4">
               <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-              <div className="flex justify-between items-center mb-4">
-                <p className="font-semibold">Total Items:</p>
-                <p>
-                  {state.items.reduce((sum, item) => sum + item.quantity, 0)}
-                </p>
+              {state.items.map((item) => {
+                const priceDetails = calculateItemPrice(item, offerDetails);
+                return (
+                  <div key={item._id} className="mb-2">
+                    <div className="flex justify-between text-sm">
+                      <span>
+                        {item.itemName} × {item.quantity}
+                      </span>
+                      <div>
+                        {priceDetails.savings > 0 && (
+                          <span className="line-through text-gray-500 mr-2">
+                            ₹{priceDetails.originalPrice.toFixed(2)}
+                          </span>
+                        )}
+                        <span>₹{priceDetails.finalPrice.toFixed(2)}</span>
+                      </div>
+                    </div>
+                    {priceDetails.appliedOffer && (
+                      <div className="text-xs text-green-600 ml-4">
+                        {priceDetails.appliedOffer.offerType.name} applied
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div className="border-t mt-4 pt-4">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold">Total Items:</p>
+                  <p>
+                    {state.items.reduce((sum, item) => sum + item.quantity, 0)}
+                  </p>
+                </div>
+                {calculateTotalSavings() > 0 && (
+                  <div className="flex justify-between items-center mb-2 text-green-600">
+                    <p className="font-semibold">Total Savings:</p>
+                    <p>₹{calculateTotalSavings().toFixed(2)}</p>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <p className="text-xl font-bold">Final Total:</p>
+                  <p className="text-xl font-bold">
+                    ₹{calculateCartTotal().toFixed(2)}
+                  </p>
+                </div>
               </div>
-              <div className="flex justify-between items-center mb-4">
-                <p className="text-xl font-bold">Total:</p>
-                <p className="text-xl font-bold">
-                  &#8377;{state.total.toFixed(2)}
-                </p>
-              </div>
-              <Button className="w-full">Proceed to Checkout</Button>
-            </div>
+
+              <Button className="w-full mt-4">Proceed to Checkout</Button>
+            </Card>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
