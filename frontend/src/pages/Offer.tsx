@@ -51,7 +51,6 @@ export const Offer: FC = () => {
   const [offers, setOffer] = useState<Offer[]>([]);
 
   const handleAddOffer = async (data: any, resetForm: () => void) => {
-    console.log("first");
     const offerData = {
       shopId,
       itemId: menuId,

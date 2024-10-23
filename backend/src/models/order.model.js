@@ -14,6 +14,11 @@ const orderSchema = new Schema(
           ref: "Menu",
           required: true,
         },
+        shopId: {
+          type: Schema.Types.ObjectId,
+          ref: "Shop",
+          required: true,
+        },
       },
     ],
     totalAmt: {
