@@ -189,18 +189,16 @@ export const ShopOrders: FC = () => {
                               </div>
                             </div>
                           ))}
-                        <div className="pt-2 border-t">
-                          <div className="flex justify-between text-sm">
-                            <span>Items Total</span>
-                            <span>₹{order.cartTotal}</span>
-                          </div>
-                          {order.totalSavings > 0 && (
-                            <div className="flex justify-between text-sm text-green-600">
-                              <span>Total Savings</span>
-                              <span>-₹{order.totalSavings}</span>
-                            </div>
-                          )}
+                        <div className="flex justify-between text-sm">
+                          <span>Items Total</span>
+                          <span>₹{order.cartTotal}</span>
                         </div>
+                        {order.totalSavings > 0 && (
+                          <div className="flex justify-between text-sm text-green-600">
+                            <span>Total Savings</span>
+                            <span>-₹{order.totalSavings}</span>
+                          </div>
+                        )}
                       </div>
                     </AccordionContent>
                   </AccordionItem>

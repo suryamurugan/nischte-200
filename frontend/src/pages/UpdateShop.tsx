@@ -6,6 +6,8 @@ import axios from "axios";
 import { API } from "@/utils/api";
 import { useUser } from "@clerk/clerk-react";
 import { toast } from "sonner";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 interface Shop {
   _id: string;
@@ -76,20 +78,24 @@ export const UpdateShop: FC = () => {
   }, [shopId]);
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Update Your Shop
-        </h2>
-        {shopDetails && (
-          <Form
-            fields={ShopFields}
-            onSubmit={handleUpdateShop}
-            initialData={shopDetails}
-            submitButtonText="Update Shop"
-          />
-        )}
+    <div className="flex flex-col px-6 md:px-[200px] min-h-screen">
+      <Navbar />
+      <div className="flex-grow items-center flex justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+            Update Your Shop
+          </h2>
+          {shopDetails && (
+            <Form
+              fields={ShopFields}
+              onSubmit={handleUpdateShop}
+              initialData={shopDetails}
+              submitButtonText="Update Shop"
+            />
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };
