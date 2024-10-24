@@ -1,26 +1,57 @@
 import { Order } from "../models/order.model.js";
 
-export const order = async (req, res) => {
+export const createOrder = async (req, res) => {
   try {
-    const { userId, deliveryStatus, totalAmt, offerId, transactionId, items } =
-      req.body;
+    const {
+      userId,
+      items,
+      cartTotal,
+      transactionId,
+      originalQuantity,
+      totalItems,
+      totalSavings,
+      // deliveryStatus = "Pending",
+    } = req.body;
+
+    // console.log("body", req.body);
+
+    if (
+      !userId ||
+      !items ||
+      !transactionId ||
+      !cartTotal ||
+      !originalQuantity ||
+      !totalItems ||
+      !totalSavings
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
 
     const order = new Order({
       userId,
-      deliveryStatus,
-      totalAmt,
-      offerId,
       items,
+      cartTotal,
       transactionId,
-      offerId,
+      originalQuantity,
+      totalItems,
+      totalSavings,
     });
 
     const savedOrder = await order.save();
 
-    res.status(200).json(savedOrder);
+    return res.status(201).json({
+      success: true,
+      message: "Order created successfully.",
+      order: savedOrder,
+    });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to place the order",
+    console.error("Error in creating order: ", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create the order.",
       error: error.message,
     });
   }

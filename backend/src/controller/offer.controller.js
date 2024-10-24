@@ -140,6 +140,7 @@ export const offerWithOutMetaData = async (req, res) => {
           itemId: doc.itemId,
           itemName: itemNameMap[doc.itemId] || null,
           shopId: doc.shopId,
+          _id: offer._id,
           offerType: offer.offerType,
           offerDescription: offer.offerDescription,
           isActive: offer._isActive,
@@ -169,28 +170,22 @@ const checkOfferEligibility = async (offer, visitCount) => {
 export const isOfferEligible = async (req, res) => {
   try {
     const { offerIds } = req.body;
-
     const applicableOffers = [];
 
     const objectIds = offerIds.map((id) => new mongoose.Types.ObjectId(id));
-
     const allOffersData = await Offer.find(
       { "offers._id": { $in: objectIds } },
-      { offers: 1, shopId: 1 }
+      { offers: 1, shopId: 1, _id: 1 }
     );
 
-    // console.log("all offer data ", allOffersData);
     for (const offerData of allOffersData) {
       const matchingOffers = offerData.offers.filter((offer) =>
         objectIds.some((id) => id.equals(offer._id))
       );
 
-      // console.log("maching", matchingOffers);
-
       for (const matchedOffer of matchingOffers) {
         const visitCount = await Order.countDocuments({
           "items.shopId": offerData.shopId,
-          // deliveryStatus: "Successful",
         });
 
         const isEligible = await checkOfferEligibility(
@@ -201,10 +196,8 @@ export const isOfferEligible = async (req, res) => {
         if (isEligible) {
           applicableOffers.push({
             offerId: matchedOffer._id,
-            // offerType: matchedOffer.offerType,
-            // offerDescription: matchedOffer.offerDescription,
-            // shopId: offerData.shopId,
-            // visitCount,
+            parentId: offerData._id,
+            isActive: matchedOffer._isActive,
           });
         }
       }
