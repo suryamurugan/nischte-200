@@ -18,6 +18,7 @@ import { UpdateMenu } from "./pages/UpdateMenu";
 import { UpdateOffer } from "./pages/UpdateOffer";
 import { Cart } from "./pages/Cart";
 import { CartProvider } from "./context/CartContext";
+import { Order } from "./pages/Order";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/shops" element={<Shops />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/order" element={<Order />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
 

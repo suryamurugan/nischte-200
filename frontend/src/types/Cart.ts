@@ -8,6 +8,8 @@ export interface Item {
 }
 
 export interface CartItem extends Item {
+  shopId: any;
+  item: any;
   quantity: number;
 }
 
