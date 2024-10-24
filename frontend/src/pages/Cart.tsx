@@ -11,8 +11,21 @@ import { Footer } from "@/components/Footer";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import { API } from "@/utils/api";
+import { useUser } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export const Cart = () => {
+  const { user } = useUser();
+  const userId = user?.id;
+
+  const navigate = useNavigate();
+
   const { state, dispatch } = useCart();
   const [quantities, setQuantities] = useState<{ [key: string]: string }>({});
   const [applicableOffers, setApplicableOffers] = useState([]);
@@ -202,6 +215,7 @@ export const Cart = () => {
         return {
           itemId: item._id,
           itemName: item.itemName,
+          shopId: item.shopId,
           quantity: item.quantity,
           basePrice: item.price,
           totalItems: priceDetails.totalItems,
@@ -214,10 +228,16 @@ export const Cart = () => {
                 offerName: priceDetails.appliedOffer.offerType.name,
                 description:
                   priceDetails.appliedOffer.offerDescription.description,
-                discountRate:
-                  priceDetails.appliedOffer.offerDescription.discountRate,
-                plusOffers:
-                  priceDetails.appliedOffer.offerDescription.plusOffers,
+                ...(priceDetails.appliedOffer.offerDescription?.discountRate !==
+                  undefined && {
+                  discountRate:
+                    priceDetails.appliedOffer.offerDescription.discountRate,
+                }),
+                ...(priceDetails.appliedOffer.offerDescription?.plusOffers !==
+                  undefined && {
+                  plusOffer:
+                    priceDetails.appliedOffer.offerDescription.plusOffers,
+                }),
               }
             : null,
         };
@@ -235,15 +255,61 @@ export const Cart = () => {
         (total, item) => total + item.quantity,
         0
       ),
+      userId,
     };
 
-    console.log("Order Summary:", summary);
+    localStorage.setItem("orderSummary", JSON.stringify(summary));
     return summary;
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     const orderSummary = generateOrderSummary();
-    console.log("Proceeding to checkout with order:", orderSummary);
+    const { cartTotal } = orderSummary;
+
+    console.log("order summary in cart", orderSummary);
+
+    try {
+      const {
+        data: { order },
+      } = await axios.post(`${API}/api/v1/payment/checkout`, {
+        amount: cartTotal,
+      });
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY,
+        amount: order.amount,
+        currency: "INR",
+        name: "Ashish",
+        description: "testing",
+        image: "hey",
+        order_id: order.id,
+        callback_url: `${API}/api/v1/payment/paymentverification`,
+        redirect: true,
+        prefill: {
+          name: "Ashish",
+          email: "ashish@gmail.com",
+          contact: "9876543210",
+        },
+        notes: {
+          address: "Razorpay Corporate Office",
+          orderSummary: JSON.stringify(orderSummary),
+        },
+        theme: {
+          color: "#121212",
+        },
+        modal: {
+          ondismiss: function () {
+            toast.info("Payment cancelled");
+          },
+        },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      toast.error("Checkout failed");
+    }
   };
 
   useEffect(() => {
