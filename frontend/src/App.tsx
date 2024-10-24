@@ -19,6 +19,8 @@ import { UpdateOffer } from "./pages/UpdateOffer";
 import { Cart } from "./pages/Cart";
 import { CartProvider } from "./context/CartContext";
 import { Order } from "./pages/Order";
+import { UserOrder } from "./pages/UserOrder";
+import { ShopOrders } from "./pages/ShopOrders";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -35,6 +37,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/shops" element={<Shops />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/:userId/order" element={<UserOrder />} />
             <Route path="/order" element={<Order />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
@@ -48,6 +51,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="orders/:shopId" element={<ShopOrders />} />
               <Route
                 path="manage/:shopId"
                 element={

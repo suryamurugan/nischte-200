@@ -211,7 +211,7 @@ export const ShopDetails: FC = () => {
               {shop?.shopName}
             </h1>
             {user?.id === shop?.ownerId && isManagePage ? (
-              <div className="space-x-4 mt-2 mb-4 flex items-center justify-center">
+              <div className="flex flex-wrap sm:flex-none gap-4 mt-2 mb-4 justify-center">
                 <Link to={`/shop/${shopId}/add-menu`}>
                   <Button className="space-x-2">
                     <MdOutlineAddCircleOutline size={18} />
@@ -228,7 +228,7 @@ export const ShopDetails: FC = () => {
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" className="space-x-2">
-                      <MdDelete size={18} /> <p>Shop</p>
+                      <MdDelete size={18} /> <p>Delete Shop</p>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -249,6 +249,12 @@ export const ShopDetails: FC = () => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+
+                <Link to={`/shop/orders/${shopId}`}>
+                  <Button className="space-x-2">
+                    <FaPen size={18} /> <p>Orders</p>
+                  </Button>
+                </Link>
               </div>
             ) : null}
           </nav>

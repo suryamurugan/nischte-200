@@ -73,40 +73,43 @@ const CartItemSchema = new Schema({
   },
 });
 
-const CartSchema = new Schema({
-  userId: {
-    type: String,
-    required: true,
+const CartSchema = new Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+    cartTotal: {
+      type: Number,
+      required: true,
+    },
+    totalItems: {
+      type: Number,
+      required: true,
+    },
+    originalQuantity: {
+      type: Number,
+      required: true,
+    },
+    totalSavings: {
+      type: Number,
+      default: 0,
+    },
+    items: {
+      type: [CartItemSchema],
+      required: true,
+    },
+    transactionId: {
+      type: String,
+      required: true,
+    },
+    deliveryStatus: {
+      type: String,
+      enum: ["pending", "successful"],
+      default: "successful",
+    },
   },
-  cartTotal: {
-    type: Number,
-    required: true,
-  },
-  totalItems: {
-    type: Number,
-    required: true,
-  },
-  originalQuantity: {
-    type: Number,
-    required: true,
-  },
-  totalSavings: {
-    type: Number,
-    default: 0,
-  },
-  items: {
-    type: [CartItemSchema],
-    required: true,
-  },
-  transactionId: {
-    type: String,
-    required: true,
-  },
-  deliveryStatus: {
-    type: String,
-    enum: ["pending", "successful"],
-    default: "successful",
-  },
-});
+  { timestamps: true }
+);
 
 export const Order = mongoose.model("Order", CartSchema);
