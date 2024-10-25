@@ -196,19 +196,21 @@ export const MenuDetails: FC = () => {
   return (
     <div className="px-6 md:px-[200px]">
       <Navbar />
+
+      {/* Item Card */}
       <div className="my-4">
         <Card className="pt-2 pb-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+            <div className="aspect-[4/3] overflow-hidden">
               <img
                 src={item?.picture}
                 alt={`${item?.itemName}`}
-                className="w-full h-auto object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center p-4">
               <h1 className="font-extrabold text-4xl mb-4">{item?.itemName}</h1>
-              <p>{item?.itemDescription}</p>
+              <p className="line-clamp-3">{item?.itemDescription}</p>
               <div className="flex items-center mt-4 space-x-4">
                 <p className="text-lg font-bold">&#8377;{item?.price}</p>
                 <div className="flex items-center gap-2">
@@ -249,6 +251,7 @@ export const MenuDetails: FC = () => {
         </Card>
       </div>
 
+      {/* Other Items Carousel */}
       <h1 className="font-extrabold text-black mt-6 mb-3 text-2xl">
         Other Items
       </h1>
@@ -266,34 +269,41 @@ export const MenuDetails: FC = () => {
                 key={item?._id}
                 className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2"
               >
-                <Card
-                  className="cursor-pointer w-full h-full"
-                  onClick={() => handleItemClickOnCarousel(item._id)}
-                >
-                  <img
-                    src={item?.picture}
-                    alt={item?.itemName}
-                    className="h-48 w-full object-cover rounded-t-md"
-                  />
-                  <CardHeader>
-                    <CardTitle className="text-xl">{item?.itemName}</CardTitle>
+                <Card className="cursor-pointer w-full h-full flex flex-col">
+                  <div
+                    className="aspect-[4/3] overflow-hidden"
+                    onClick={() => handleItemClickOnCarousel(item._id)}
+                  >
+                    <img
+                      src={item?.picture}
+                      alt={item?.itemName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardHeader className="flex-none">
+                    <CardTitle className="text-xl line-clamp-1">
+                      {item?.itemName}
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm">{item?.itemDescription}</p>
+                  <CardContent className="flex-grow">
+                    <p className="text-sm line-clamp-2">
+                      {item?.itemDescription}
+                    </p>
                   </CardContent>
-                  <CardFooter className="flex justify-between items-center">
+                  <CardFooter className="flex-none flex justify-between items-center flex-wrap gap-2">
                     <p className="font-bold">&#8377;{item?.price}</p>
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleUpdateQuantity(
                             item._id,
                             parseInt(quantities[item._id] || "1") - 1
-                          )
-                        }
+                          );
+                        }}
                       >
                         <FaMinus className="h-4 w-4" />
                       </Button>
@@ -305,22 +315,29 @@ export const MenuDetails: FC = () => {
                         }
                         onBlur={() => handleQuantityBlur(item._id)}
                         className="w-16 text-center"
+                        onClick={(e) => e.stopPropagation()}
                       />
                       <Button
                         variant="outline"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleUpdateQuantity(
                             item._id,
                             parseInt(quantities[item._id] || "1") + 1
-                          )
-                        }
+                          );
+                        }}
                       >
                         <FaPlus className="h-4 w-4" />
                       </Button>
                     </div>
-                    <Button onClick={() => handleAddCarouselItemToCart(item)}>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddCarouselItemToCart(item);
+                      }}
+                    >
                       Add to Cart
                     </Button>
                   </CardFooter>

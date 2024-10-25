@@ -238,7 +238,7 @@ export const Order = () => {
 
             <div className="flex gap-4 pt-4">
               <Button
-                onClick={() => navigate("/shop")}
+                onClick={() => navigate("/shops")}
                 className="flex-1"
                 variant="outline"
               >

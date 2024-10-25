@@ -19,17 +19,6 @@ import axios from "axios";
 import { API } from "@/utils/api";
 
 import HeoSectionPic from "../assets/nischte-hero-pic.jpg";
-import HeroImage from "../assets/HeroImage.png";
-import HeroImage2 from "../assets/HeroImage2.jpg";
-import HeroImage3 from "../assets/HeroImage3.jpg";
-import HeroImage4 from "../assets/HeroImage4.jpg";
-
-const HeroImages = [
-  { name: "Banner1", path: HeroImage, id: 1 },
-  { name: "Banner2", path: HeroImage2, id: 2 },
-  { name: "Banner3", path: HeroImage3, id: 3 },
-  { name: "Banner4", path: HeroImage4, id: 4 },
-];
 
 interface Shop {
   _id: string;
@@ -213,11 +202,6 @@ export const Home = () => {
                   <span className="font-bold">Contact</span>: {shop.contactNo}
                 </p>
               </CardContent>
-              <CardFooter>
-                <p>
-                  <span className="font-bold">Shop ID</span>: {shop._id}
-                </p>
-              </CardFooter>
             </Card>
           ))}
         </div>
@@ -255,7 +239,7 @@ export const Home = () => {
                     <p className="text-sm">{item.itemDescription}</p>
                   </CardContent>
 
-                  <CardFooter className="p-4 pt-0">
+                  <CardFooter className="pt-0">
                     <div className="w-full">
                       <p className="font-bold mb-2">&#8377;{item.price}</p>
                       <div className="flex items-center justify-between gap-2 w-full">
