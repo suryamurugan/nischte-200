@@ -49,18 +49,20 @@ export const Home = () => {
   const fetchShopDetails = async () => {
     try {
       const res = await axios.get(`${API}/api/v1/shop?limit=4`);
-      setShops(res.data);
+      setShops(res.data.shops);
     } catch (error) {
       console.log("Failed to fetch the shop details", error);
+      setShops([]);
     }
   };
 
   const fetchItemsDetails = async () => {
     try {
-      const res = await axios.get(`${API}/api/v1/shop/menu?limit=4`);
-      setItems(res.data);
+      const res = await axios.get(`${API}/api/v1/shop/menu?limit=4&page=1`);
+      setItems(res.data.items || []);
     } catch (error) {
       console.log("Failed to fetch the shop details", error);
+      setItems([]);
     }
   };
 
@@ -126,8 +128,8 @@ export const Home = () => {
     }
   };
 
-  const handleShopViewMore = () => {
-    navigate("/shops");
+  const handleViewMoreClick = (path: string) => {
+    navigate(`${path}`);
   };
 
   useEffect(() => {
@@ -173,12 +175,12 @@ export const Home = () => {
         {/* Shop Section  */}
         <div className="flex justify-between">
           <h1 className="font-extrabold text-black mb-4 text-2xl">Shops</h1>
-          <p
-            className="text-blue-700 cursor-pointer"
-            onClick={handleShopViewMore}
+          <Button
+            className=" cursor-pointer"
+            onClick={() => handleViewMoreClick("/shops")}
           >
             View more
-          </p>
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4">
@@ -212,7 +214,12 @@ export const Home = () => {
             <h1 className="font-extrabold text-black mb-4 text-2xl">
               New In Store
             </h1>
-            <p className="text-blue-700">View more</p>
+            <Button
+              className="cursor-pointer"
+              onClick={() => handleViewMoreClick("/items")}
+            >
+              View more
+            </Button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4">
             {items.map((item) => (

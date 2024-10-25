@@ -7,8 +7,10 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { API } from "@/utils/api";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterShop: FC = () => {
+  const navigate = useNavigate();
   const { user } = useUser();
 
   const handleRegister = async (
@@ -36,6 +38,7 @@ export const RegisterShop: FC = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Shop registered successfully!");
+      navigate("/shop/manage");
       resetForm();
     } catch (error: any) {
       console.error("Error registering shop:", error);

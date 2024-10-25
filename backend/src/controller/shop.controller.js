@@ -32,11 +32,35 @@ export const createShop = async (req, res) => {
 
 export const getShops = async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || null;
-    const query = limit ? Shop.find().limit(limit) : Shop.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const search = req.query.search || "";
 
-    const shops = await query;
-    res.status(200).json(shops);
+    const skip = (page - 1) * limit;
+
+    const searchQuery = search
+      ? {
+          $or: [
+            { shopName: { $regex: search, $options: "i" } },
+            { address: { $regex: search, $options: "i" } },
+            { contactNo: { $regex: search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const total = await Shop.countDocuments(searchQuery);
+
+    const shops = await Shop.find(searchQuery)
+      .skip(skip)
+      .limit(limit)
+      .sort({ shopName: 1 });
+
+    res.status(200).json({
+      shops,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
     res.status(500).json({
       message: "Failed to get the shops",

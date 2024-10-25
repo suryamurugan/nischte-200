@@ -114,7 +114,10 @@ export const getAllMenuOfShop = async (req, res) => {
 
 export const getXitems = async (req, res) => {
   try {
+    const page = parseInt(req.query.page);
     const limit = parseInt(req.query.limit);
+    const skip = (page - 1) * limit;
+
     const menus = await Menu.find();
 
     const allItems = menus.reduce((acc, menu) => {
@@ -124,10 +127,23 @@ export const getXitems = async (req, res) => {
       }));
       return acc.concat(itemsWithShop);
     }, []);
-    const shuffledItems = allItems.sort(() => 0.5 - Math.random());
-    const randomItems = shuffledItems.slice(0, limit);
 
-    res.status(200).json(randomItems);
+    const totalItems = allItems.length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const paginatedItems = allItems.slice(skip, skip + limit);
+
+    res.status(200).json({
+      items: paginatedItems,
+      pagination: {
+        currentPage: page,
+        itemsPerPage: limit,
+        totalItems: totalItems,
+        totalPages: totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       message: "Failed to get the menu",
