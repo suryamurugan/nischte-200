@@ -18,6 +18,9 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const { user } = useUser();
+  const userId = user?.id;
+
   const { state } = useCart();
 
   const [search, setSearch] = useState<string>("");
@@ -63,7 +66,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="sticky top-0 z-50 bg-white shadow-sm">
+    <div className="sticky top-0 z-50 bg-white ">
       <div className="max-w-screen-xl mx-auto">
         <div className="flex justify-between items-center pt-4 relative z-20 mb-5">
           {/* left section  */}
@@ -135,6 +138,20 @@ export const Navbar: React.FC = () => {
                   Shops
                 </Link>
                 <Link
+                  to="/items"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  Items
+                </Link>
+                <Link
+                  to={`/${userId}/order`}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  My Orders
+                </Link>
+                <Link
                   to="/about-us"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => setIsDropdownOpen(false)}
@@ -149,8 +166,7 @@ export const Navbar: React.FC = () => {
                   Contact us
                 </Link>
 
-                {/* Owner here */}
-
+                {/* Owner */}
                 <div className="border-t border-gray-100 mt-1 pt-1">
                   <div className="px-4 py-2 text-sm font-medium text-gray-900">
                     Owners

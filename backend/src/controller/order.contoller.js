@@ -15,21 +15,6 @@ export const createOrder = async (req, res) => {
 
     // console.log("body", req.body);
 
-    if (
-      !userId ||
-      !items ||
-      !transactionId ||
-      !cartTotal ||
-      !originalQuantity ||
-      !totalItems ||
-      !totalSavings
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing required fields",
-      });
-    }
-
     const order = new Order({
       userId,
       items,
@@ -70,11 +55,14 @@ export const getAllUserOrder = async (req, res) => {
   }
 };
 
-export const getSpecificOrderDetails = async (req, res) => {
+export const getOrdersForOwner = async (req, res) => {
   try {
-    const orderId = req.params.orderId;
-    const order = await Order.findById(orderId);
-    res.status(200).json(order);
+    const shopId = req.params.shopId;
+    const orders = await Order.find({
+      "items.shopId": shopId,
+    });
+
+    res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({
       message: "Failed to get the order details",

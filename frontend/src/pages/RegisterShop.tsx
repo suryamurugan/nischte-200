@@ -45,10 +45,10 @@ export const RegisterShop: FC = () => {
 
   return (
     <>
-      <div className="px-6 md:px-[200px] flex flex-col min-h-screen">
+      <div className="px-6 md:px-[200px] flex flex-col ">
         <Navbar />
         <div className="flex-grow">
-          <div className="min-h-screen flex justify-center items-center">
+          <div className="flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
               <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
                 Register Your Shop

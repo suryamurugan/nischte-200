@@ -42,6 +42,8 @@ export const Order = () => {
   const { dispatch } = useCart();
   const { user, isLoaded } = useUser();
 
+  const userId = user?.id;
+
   useEffect(() => {
     const createOrder = async (paymentId: string) => {
       try {
@@ -80,6 +82,7 @@ export const Order = () => {
         dispatch({ type: "CLEAR_CART" });
         toast.success("Order placed successfully!");
       } catch (err) {
+        console.log("here", err);
         const errorMessage =
           err instanceof Error ? err.message : "Failed to create order";
         setError(errorMessage);
@@ -100,7 +103,6 @@ export const Order = () => {
         return;
       }
 
-      // Ensure user auth is loaded before proceeding
       if (isLoaded) {
         await createOrder(paymentReference);
       }
@@ -236,13 +238,16 @@ export const Order = () => {
 
             <div className="flex gap-4 pt-4">
               <Button
-                onClick={() => navigate("/shop")}
+                onClick={() => navigate("/shops")}
                 className="flex-1"
                 variant="outline"
               >
                 Continue Shopping
               </Button>
-              <Button onClick={() => navigate("/orders")} className="flex-1">
+              <Button
+                onClick={() => navigate(`/${userId}/order`)}
+                className="flex-1"
+              >
                 View All Orders
               </Button>
             </div>

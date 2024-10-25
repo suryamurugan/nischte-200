@@ -3,14 +3,14 @@ import {
   createOrder,
   deleteOrder,
   getAllUserOrder,
-  getSpecificOrderDetails,
+  getOrdersForOwner,
 } from "../controller/order.contoller.js";
 
 const router = Router();
 
 router.route("/").post(createOrder);
-router.route("/past/:userId").get(getAllUserOrder);
-router.route("/:orderId").get(getSpecificOrderDetails);
+router.route("/user/view/:userId").get(getAllUserOrder);
+router.route("/shop/view/:shopId").get(getOrdersForOwner);
 router.route("/:orderId").delete(deleteOrder); //On-hold
 
 export default router;
