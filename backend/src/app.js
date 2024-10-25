@@ -15,14 +15,14 @@ app.use(cookieParser());
 
 import shopRouter from "../src/routes/shop.route.js";
 import shopMenuRouter from "../src/routes/menu.route.js";
-import userMenuViewRouter from "../src/routes/userMenu.route.js";
 import orderRouter from "../src/routes/order.route.js";
 import offerRouter from "../src/routes/offer.route.js";
 import paymentRouter from "../src/routes/payment.route.js";
+import supportRouter from "../src/routes/support.route.js";
 
 app.use("/api/v1/shop", shopMenuRouter);
 app.use("/api/v1/shop", shopRouter);
-// app.use("/api/v1/shops", userMenuViewRouter);
+app.use("/api/v1/support", supportRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/offer", offerRouter);
 app.use("/api/v1/payment", paymentRouter);
