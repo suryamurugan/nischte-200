@@ -23,6 +23,7 @@ import {
 import { MdDelete } from "react-icons/md";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 interface OfferType {
   name: string;
@@ -49,6 +50,7 @@ export const Offer: FC = () => {
   const navigate = useNavigate();
 
   const [offers, setOffer] = useState<Offer[]>([]);
+  const [loading, setloading] = useState<Boolean>(false);
 
   const handleAddOffer = async (data: any, resetForm: () => void) => {
     const offerData = {
@@ -78,11 +80,14 @@ export const Offer: FC = () => {
 
   const fetchOffer = async () => {
     try {
+      setloading(true);
       const res = await axios.get(`${API}/api/v1/offer/${shopId}/${menuId}`);
       setOffer(res.data.offers[0].offers);
       console.log(res.data.offers[0].offers);
     } catch (error) {
       console.log("Failed to get the offer");
+    } finally {
+      setloading(false);
     }
   };
 
@@ -132,100 +137,105 @@ export const Offer: FC = () => {
               ) : null}
               {offers &&
                 offers.length > 0 &&
-                offers.map((offer) => (
-                  <Card
-                    key={offer._id}
-                    className={`flex flex-col mb-3 pl-3 ${
-                      offer._isActive ? "bg-green-200" : "bg-gray-200"
-                    }`}
-                  >
-                    <div className="flex justify-between items-center pt-2">
-                      <p className="font-semibold">{offer.offerType.name}</p>
-                      <div className="space-x-2 pr-2">
-                        <Button className="p-2">
-                          <FaPen
-                            size={18}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOfferUpdate(offer._id);
-                            }}
-                          />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              className="p-2"
-                              variant="destructive"
+                offers.map((offer) =>
+                  loading ? (
+                    <SkeletonGrid count={1} />
+                  ) : (
+                    <Card
+                      key={offer._id}
+                      className={`flex flex-col mb-3 pl-3 ${
+                        offer._isActive ? "bg-green-200" : "bg-gray-200"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center pt-2">
+                        <p className="font-semibold">{offer.offerType.name}</p>
+                        <div className="space-x-2 pr-2">
+                          <Button className="p-2">
+                            <FaPen
+                              size={18}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOfferUpdate(offer._id);
+                              }}
+                            />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                className="p-2"
+                                variant="destructive"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <MdDelete size={18} />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent
                               onClick={(e) => e.stopPropagation()}
                             >
-                              <MdDelete size={18} />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Are you sure you want to delete this offer?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete your offer and remove your
-                                data from our servers.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteOffer(offer._id);
-                                }}
-                              >
-                                Continue
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you sure you want to delete this offer?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will
+                                  permanently delete your offer and remove your
+                                  data from our servers.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteOffer(offer._id);
+                                  }}
+                                >
+                                  Continue
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex text-sm space-x-4">
-                      <span>
-                        Number of visits:{" "}
-                        {offer.offerDescription.numberOfVisits}
-                      </span>
-                      {offer.offerDescription.plusOffers && (
+                      <div className="flex text-sm space-x-4">
                         <span>
-                          Plus Offers: {offer.offerDescription.plusOffers}{" "}
+                          Number of visits:{" "}
+                          {offer.offerDescription.numberOfVisits}
                         </span>
-                      )}
+                        {offer.offerDescription.plusOffers && (
+                          <span>
+                            Plus Offers: {offer.offerDescription.plusOffers}{" "}
+                          </span>
+                        )}
 
-                      {offer.offerDescription.minOrder && (
-                        <span>
-                          Minimum Order: {offer.offerDescription.minOrder}{" "}
-                        </span>
-                      )}
+                        {offer.offerDescription.minOrder && (
+                          <span>
+                            Minimum Order: {offer.offerDescription.minOrder}{" "}
+                          </span>
+                        )}
 
-                      {offer.offerDescription.specialOccasionDate && (
-                        <span>
-                          Special Occasion:{" "}
-                          {new Date(
-                            offer.offerDescription.specialOccasionDate
-                          ).toLocaleDateString()}
-                        </span>
-                      )}
+                        {offer.offerDescription.specialOccasionDate && (
+                          <span>
+                            Special Occasion:{" "}
+                            {new Date(
+                              offer.offerDescription.specialOccasionDate
+                            ).toLocaleDateString()}
+                          </span>
+                        )}
 
-                      {offer.offerDescription.discountRate && (
-                        <span>
-                          Discount Rate: {offer.offerDescription.discountRate}%{" "}
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-sm">
-                      Details: {offer.offerDescription.description}
-                    </div>
-                  </Card>
-                ))}
+                        {offer.offerDescription.discountRate && (
+                          <span>
+                            Discount Rate: {offer.offerDescription.discountRate}
+                            %{" "}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm">
+                        Details: {offer.offerDescription.description}
+                      </div>
+                    </Card>
+                  )
+                )}
             </div>
           </div>
         </div>

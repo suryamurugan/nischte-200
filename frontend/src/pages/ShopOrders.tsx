@@ -84,14 +84,17 @@ export const ShopOrders: FC = () => {
 
   if (loading) {
     return (
-      <div className="p-6 md:p-8">
-        <h1 className="text-2xl font-bold mb-6">Shop Orders</h1>
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32 w-full" />
-          ))}
+      <>
+        <div className="px-6 md:px-[200px]">
+          <Navbar />
+          <h1 className="text-2xl font-bold mb-6">Shop Orders</h1>
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Skeleton key={i} className="h-32 w-full" />
+            ))}
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 

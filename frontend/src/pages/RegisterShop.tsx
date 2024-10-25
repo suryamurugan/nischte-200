@@ -13,16 +13,23 @@ export const RegisterShop: FC = () => {
   const navigate = useNavigate();
   const { user } = useUser();
 
+  // console.log("user emails", user?.primaryEmailAddress?.emailAddress);
+
   const handleRegister = async (
     data: Record<string, any>,
     resetForm: () => void
   ) => {
     const ownerId = user?.id;
+    const email = user?.primaryEmailAddress?.emailAddress;
 
     const formData = new FormData();
 
     if (ownerId) {
       formData.append("ownerId", ownerId);
+    }
+
+    if (email) {
+      formData.append("email", email);
     }
 
     Object.keys(data).forEach((key) => {

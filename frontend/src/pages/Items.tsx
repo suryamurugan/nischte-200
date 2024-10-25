@@ -16,6 +16,7 @@ import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API } from "@/utils/api";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 interface Item {
   _id: string;
@@ -157,94 +158,100 @@ export const Items = () => {
   }, []);
 
   const renderItemCard = (item: Item) => (
-    <Card
-      key={item._id}
-      className="cursor-pointer w-full flex flex-col h-full"
-      onClick={(e) => {
-        e.stopPropagation();
-        handleItemClick(item._id, item.shopId);
-      }}
-    >
-      <img
-        src={item.picture}
-        alt={item.itemName}
-        className="h-48 w-full object-cover rounded-t-md"
-      />
+    <>
+      {loading ? (
+        <SkeletonGrid count={1} />
+      ) : (
+        <Card
+          key={item._id}
+          className="cursor-pointer w-full flex flex-col h-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleItemClick(item._id, item.shopId);
+          }}
+        >
+          <img
+            src={item.picture}
+            alt={item.itemName}
+            className="h-48 w-full object-cover rounded-t-md"
+          />
 
-      <div className="flex flex-col flex-grow">
-        <CardHeader>
-          <CardTitle className="text-xl">{item.itemName}</CardTitle>
-        </CardHeader>
+          <div className="flex flex-col flex-grow">
+            <CardHeader>
+              <CardTitle className="text-xl">{item.itemName}</CardTitle>
+            </CardHeader>
 
-        <CardContent className="flex-grow">
-          <p className="text-sm">{item.itemDescription}</p>
-        </CardContent>
+            <CardContent className="flex-grow">
+              <p className="text-sm">{item.itemDescription}</p>
+            </CardContent>
 
-        <CardFooter className="pt-0">
-          <div className="w-full">
-            <p className="font-bold mb-2">&#8377;{item.price}</p>
-            <div className="flex items-center justify-between gap-2 w-full">
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUpdateQuantity(
-                      item._id,
-                      parseInt(quantities[item._id] || "1") - 1
-                    );
-                  }}
-                >
-                  <FaMinus className="h-4 w-4" />
-                </Button>
+            <CardFooter className="pt-0">
+              <div className="w-full">
+                <p className="font-bold mb-2">&#8377;{item.price}</p>
+                <div className="flex items-center justify-between gap-2 w-full">
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUpdateQuantity(
+                          item._id,
+                          parseInt(quantities[item._id] || "1") - 1
+                        );
+                      }}
+                    >
+                      <FaMinus className="h-4 w-4" />
+                    </Button>
 
-                <Input
-                  type="text"
-                  value={quantities[item._id] || "1"}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    handleQuantityChange(item._id, e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    e.stopPropagation();
-                    handleQuantityBlur(item._id);
-                  }}
-                  className="w-12 text-center h-8 px-1"
-                  onClick={(e) => e.stopPropagation()}
-                />
+                    <Input
+                      type="text"
+                      value={quantities[item._id] || "1"}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleQuantityChange(item._id, e.target.value);
+                      }}
+                      onBlur={(e) => {
+                        e.stopPropagation();
+                        handleQuantityBlur(item._id);
+                      }}
+                      className="w-12 text-center h-8 px-1"
+                      onClick={(e) => e.stopPropagation()}
+                    />
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUpdateQuantity(
-                      item._id,
-                      parseInt(quantities[item._id] || "1") + 1
-                    );
-                  }}
-                >
-                  <FaPlus className="h-4 w-4" />
-                </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUpdateQuantity(
+                          item._id,
+                          parseInt(quantities[item._id] || "1") + 1
+                        );
+                      }}
+                    >
+                      <FaPlus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(item);
+                    }}
+                    className="h-8 text-sm"
+                  >
+                    Add to Cart
+                  </Button>
+                </div>
               </div>
-
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddToCart(item);
-                }}
-                className="h-8 text-sm"
-              >
-                Add to Cart
-              </Button>
-            </div>
+            </CardFooter>
           </div>
-        </CardFooter>
-      </div>
-    </Card>
+        </Card>
+      )}
+    </>
   );
 
   return (
