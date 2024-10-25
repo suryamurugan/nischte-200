@@ -9,6 +9,7 @@ import axios from "axios";
 import { API } from "@/utils/api";
 import { toast } from "sonner";
 import { useUser } from "@clerk/clerk-react";
+import { useQuery } from "@/Hooks/useQuery";
 
 interface OrderDetails {
   _id: string;
@@ -34,6 +35,8 @@ interface OrderDetails {
 }
 
 export const Order = () => {
+  const query = useQuery();
+  const reference = query.get("reference");
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -135,9 +138,18 @@ export const Order = () => {
             <h1 className="text-2xl font-bold mb-4 text-red-600">
               Order Error
             </h1>
-            <p className="mb-4">{error}</p>
-            <Button onClick={() => navigate("/cart")} className="w-full">
-              Return to Cart
+            <p className="mb-3">
+              Don't worry your money is safe, we'll reach back to you within
+              5hr. Submit the report with your payment id.
+            </p>
+            <p className="mb-3">
+              Payment id: <span className="font-semibold">{reference}</span>
+            </p>
+            <Button
+              onClick={() => navigate(`/support/${userId}`)}
+              className="w-full"
+            >
+              Support
             </Button>
           </Card>
         </div>
@@ -158,8 +170,15 @@ export const Order = () => {
             <p className="mb-4">
               Unable to find order details. Please try refreshing the page.
             </p>
-            <Button onClick={() => navigate("/cart")} className="w-full">
-              Return to Cart
+            <p>
+              Don't worry your money is safe, we'll reach back to you within
+              5hr. Submit the report with your payment id.
+            </p>
+            <Button
+              onClick={() => navigate(`/support/${userId}`)}
+              className="w-full"
+            >
+              Support
             </Button>
           </Card>
         </div>
@@ -169,7 +188,7 @@ export const Order = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col px-6 md:px-[200px]">
       <Navbar />
       <div className="flex-grow container mx-auto px-4 py-8">
         <Card className="max-w-2xl mx-auto p-6">
