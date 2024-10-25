@@ -112,4 +112,4 @@ const CartSchema = new Schema(
   { timestamps: true }
 );
 
-export const Order = mongoose.model("Order", CartSchema);
+export const Order = model("Order", CartSchema);

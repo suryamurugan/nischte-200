@@ -13,6 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { API } from "@/utils/api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 interface Shop {
   _id: string;
@@ -28,15 +30,19 @@ export const ManageShops: FC = () => {
 
   const [shopDetails, setShopDetails] = useState<Shop[]>([]);
   const [charLimit, setCharLimit] = useState(70);
+  const [loading, setLoading] = useState<Boolean>(false);
 
   const navigate = useNavigate();
 
   const fetchUserShopDetails = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(`${API}/api/v1/shop/own/${userId}`);
       setShopDetails(res.data);
     } catch (error) {
       console.log("Failed to get shop details");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,48 +84,52 @@ export const ManageShops: FC = () => {
             </h1>
           </nav>
 
-          {shopDetails.map((shop) => (
+          {shopDetails.map((shop) =>
             // TODO : fix if the word is big it is overflowing
-            <Card
-              key={shop._id}
-              className="cursor-pointer mb-4 flex"
-              onClick={() => handleShopClick(shop._id)}
-            >
-              <div className="w-[40%]">
-                <img
-                  src={shop.picture}
-                  alt={shop.shopName}
-                  className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
-                />
-              </div>
-              <div className="w-[60%]">
-                <CardHeader>
-                  <CardTitle className="text-2xl">{shop.shopName}</CardTitle>
-                  <span className="text-[10px] sm:text-sm">{shop._id}</span>
-                  <CardDescription>
+            loading ? (
+              <SkeletonGrid count={shopDetails.length} />
+            ) : (
+              <Card
+                key={shop._id}
+                className="cursor-pointer mb-4 flex"
+                onClick={() => handleShopClick(shop._id)}
+              >
+                <div className="w-[40%]">
+                  <img
+                    src={shop.picture}
+                    alt={shop.shopName}
+                    className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
+                  />
+                </div>
+                <div className="w-[60%]">
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{shop.shopName}</CardTitle>
+                    <span className="text-[10px] sm:text-sm">{shop._id}</span>
+                    <CardDescription>
+                      <p>
+                        <span className="text-sm">
+                          {shop.address.length > charLimit
+                            ? `${shop.address.substring(0, charLimit)}...`
+                            : shop?.address}
+                        </span>
+                      </p>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
                     <p>
-                      <span className="text-sm">
-                        {shop.address.length > charLimit
-                          ? `${shop.address.substring(0, charLimit)}...`
-                          : shop?.address}
+                      <span className="font-bold text-[10px] sm:text-lg  sm:font-semibold ">
+                        Contact
+                      </span>
+                      :
+                      <span className=" pl-1 text-[10px] sm:text-sm">
+                        {shop.contactNo}
                       </span>
                     </p>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    <span className="font-bold text-[10px] sm:text-lg  sm:font-semibold ">
-                      Contact
-                    </span>
-                    :
-                    <span className=" pl-1 text-[10px] sm:text-sm">
-                      {shop.contactNo}
-                    </span>
-                  </p>
-                </CardContent>
-              </div>
-            </Card>
-          ))}
+                  </CardContent>
+                </div>
+              </Card>
+            )
+          )}
         </div>
         <Footer />
       </div>

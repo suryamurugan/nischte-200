@@ -7,12 +7,12 @@ export const ShopFields = [
     type: "text",
     validation: z.string().min(1, { message: "Shop name is required" }),
   },
-  {
-    name: "email",
-    label: "Email",
-    type: "email",
-    validation: z.string().email({ message: "Invalid email address" }),
-  },
+  // {
+  //   name: "email",
+  //   label: "Email",
+  //   type: "email",
+  //   validation: z.string().email({ message: "Invalid email address" }),
+  // },
   {
     name: "address",
     label: "Address",

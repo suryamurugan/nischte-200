@@ -34,6 +34,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 interface Shop {
   _id: string;
@@ -58,6 +59,7 @@ export const ShopDetails: FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [charLimit, setCharLimit] = useState(70);
   const [quantities, setQuantities] = useState<{ [key: string]: string }>({});
+  const [loading, setloading] = useState<Boolean>(false);
 
   const { dispatch } = useCart();
   const { user } = useUser();
@@ -70,10 +72,13 @@ export const ShopDetails: FC = () => {
 
   const fetchShopDetails = async () => {
     try {
+      setloading(true);
       const res = await axios.get(`${API}/api/v1/shop/${shopId}`);
       setShop(res?.data);
     } catch (error) {
       console.log("Failed to get the shop details");
+    } finally {
+      setloading(false);
     }
   };
 
@@ -90,10 +95,13 @@ export const ShopDetails: FC = () => {
 
   const fetchMenuItems = async () => {
     try {
+      setloading(true);
       const res = await axios.get(`${API}/api/v1/shop/${shopId}/menu`);
       setItems(res.data[0].items);
     } catch (error) {
       console.log("Failed to fetch the menu itemsz");
+    } finally {
+      setloading(false);
     }
   };
 
@@ -260,39 +268,43 @@ export const ShopDetails: FC = () => {
           </nav>
 
           {/* Shop Display  */}
-          <Card className="cursor-pointer mb-4 flex">
-            <div className="w-[40%]">
-              {shop && (
-                <img
-                  src={shop.picture}
-                  alt={shop.shopName}
-                  className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
-                />
-              )}
-            </div>
-            <div className="w-[60%]">
-              <CardHeader>
-                <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
-                <span className="text-[10px] sm:text-sm">{shop?._id}</span>
-                <CardDescription>
-                  {(shop?.address ?? "").length > 60
-                    ? `${shop?.address.substring(0, 60)}...`
-                    : shop?.address || "No address available"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  <span className="font-bold text-[10px] sm:text-lg  sm:font-semibold ">
-                    Contact
-                  </span>
-                  :
-                  <span className=" pl-1 text-[10px] sm:text-sm">
-                    {shop?.contactNo}
-                  </span>
-                </p>
-              </CardContent>
-            </div>
-          </Card>
+          {loading ? (
+            <SkeletonGrid count={1} />
+          ) : (
+            <Card className="cursor-pointer mb-4 flex">
+              <div className="w-[40%]">
+                {shop && (
+                  <img
+                    src={shop.picture}
+                    alt={shop.shopName}
+                    className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
+                  />
+                )}
+              </div>
+              <div className="w-[60%]">
+                <CardHeader>
+                  <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
+                  <span className="text-[10px] sm:text-sm">{shop?._id}</span>
+                  <CardDescription>
+                    {(shop?.address ?? "").length > 60
+                      ? `${shop?.address.substring(0, 60)}...`
+                      : shop?.address || "No address available"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    <span className="font-bold text-[10px] sm:text-lg  sm:font-semibold ">
+                      Contact
+                    </span>
+                    :
+                    <span className=" pl-1 text-[10px] sm:text-sm">
+                      {shop?.contactNo}
+                    </span>
+                  </p>
+                </CardContent>
+              </div>
+            </Card>
+          )}
 
           {/* Items Display  */}
           <h1 className="font-extrabold text-black  mt-4 mb-4 text-lg">
@@ -302,160 +314,167 @@ export const ShopDetails: FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
             {items &&
               items.length > 0 &&
-              items.map((item) => (
-                <Card
-                  key={item?._id}
-                  className="cursor-pointer w-full"
-                  onClick={() => handleItemClick(item._id)}
-                >
-                  <img
-                    src={item?.picture}
-                    alt={item?.itemName}
-                    className="h-48 w-full object-cover rounded-t-md"
-                  />
-                  <CardHeader className="flex-row justify-between items-center">
-                    <CardTitle className="text-2xl ">
-                      {item?.itemName}
-                    </CardTitle>
-                    <div className="space-x-2">
-                      {isManagePage && shop?.ownerId === user?.id ? (
-                        <>
-                          <Button className="space-x-2">
-                            <FaPen
-                              size={18}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleItemUpdate(item._id);
-                              }}
-                            />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="destructive"
-                                className="space-x-2"
+              items.map((item) =>
+                loading ? (
+                  <SkeletonGrid count={1} />
+                ) : (
+                  <Card
+                    key={item?._id}
+                    className="cursor-pointer w-full"
+                    onClick={() => handleItemClick(item._id)}
+                  >
+                    <img
+                      src={item?.picture}
+                      alt={item?.itemName}
+                      className="h-48 w-full object-cover rounded-t-md"
+                    />
+                    <CardHeader className="flex-row justify-between items-center">
+                      <CardTitle className="text-2xl ">
+                        {item?.itemName}
+                      </CardTitle>
+                      <div className="space-x-2">
+                        {isManagePage && shop?.ownerId === user?.id ? (
+                          <>
+                            <Button className="space-x-2">
+                              <FaPen
+                                size={18}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleItemUpdate(item._id);
+                                }}
+                              />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="destructive"
+                                  className="space-x-2"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <MdDelete size={18} />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <MdDelete size={18} />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent
-                              onClick={(e) => e.stopPropagation()}
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Are you sure you want to delete this item?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will
+                                    permanently delete your Item and remove your
+                                    data from our servers.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteItem(item._id);
+                                    }}
+                                  >
+                                    Continue
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        ) : null}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>
+                        <span className="text-sm">
+                          {item.itemDescription.length > charLimit
+                            ? `${item.itemDescription.substring(
+                                0,
+                                charLimit
+                              )}...`
+                            : item?.itemDescription}
+                        </span>
+                      </p>
+                    </CardContent>
+                    <CardFooter
+                      className="flex justify-between items-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <p className="font-bold">&#8377;{item?.price}</p>
+                      {!isManagePage && (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateQuantity(
+                                  item._id,
+                                  parseInt(quantities[item._id] || "1") - 1
+                                );
+                              }}
                             >
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you sure you want to delete this item?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will
-                                  permanently delete your Item and remove your
-                                  data from our servers.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteItem(item._id);
-                                  }}
-                                >
-                                  Continue
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              <FaMinus className="h-4 w-4" />
+                            </Button>
+                            <Input
+                              type="text"
+                              value={quantities[item._id] || "1"}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                handleQuantityChange(item._id, e.target.value);
+                              }}
+                              onBlur={(e) => {
+                                e.stopPropagation();
+                                handleQuantityBlur(
+                                  item._id,
+                                  quantities[item._id] || "1"
+                                );
+                              }}
+                              className="w-16 text-center"
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateQuantity(
+                                  item._id,
+                                  parseInt(quantities[item._id] || "1") + 1
+                                );
+                              }}
+                            >
+                              <FaPlus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <div className="flex justify-start">
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(item);
+                              }}
+                            >
+                              Add to Cart
+                            </Button>
+                          </div>
                         </>
-                      ) : null}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p>
-                      <span className="text-sm">
-                        {item.itemDescription.length > charLimit
-                          ? `${item.itemDescription.substring(0, charLimit)}...`
-                          : item?.itemDescription}
-                      </span>
-                    </p>
-                  </CardContent>
-                  <CardFooter
-                    className="flex justify-between items-center"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <p className="font-bold">&#8377;{item?.price}</p>
-                    {!isManagePage && (
-                      <>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleUpdateQuantity(
-                                item._id,
-                                parseInt(quantities[item._id] || "1") - 1
-                              );
-                            }}
-                          >
-                            <FaMinus className="h-4 w-4" />
-                          </Button>
-                          <Input
-                            type="text"
-                            value={quantities[item._id] || "1"}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              handleQuantityChange(item._id, e.target.value);
-                            }}
-                            onBlur={(e) => {
-                              e.stopPropagation();
-                              handleQuantityBlur(
-                                item._id,
-                                quantities[item._id] || "1"
-                              );
-                            }}
-                            className="w-16 text-center"
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleUpdateQuantity(
-                                item._id,
-                                parseInt(quantities[item._id] || "1") + 1
-                              );
-                            }}
-                          >
-                            <FaPlus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <div className="flex justify-start">
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAddToCart(item);
-                            }}
-                          >
-                            Add to Cart
-                          </Button>
-                        </div>
-                      </>
-                    )}
-                    {user?.id === shop?.ownerId && isManagePage && (
-                      <Button
-                        className="space-x-2"
-                        onClick={() => handleOfferBtnClick(item._id)}
-                      >
-                        <MdOutlineManageHistory size={18} />
-                        <p>Offers</p>
-                      </Button>
-                    )}
-                  </CardFooter>
-                </Card>
-              ))}
+                      )}
+                      {user?.id === shop?.ownerId && isManagePage && (
+                        <Button
+                          className="space-x-2"
+                          onClick={() => handleOfferBtnClick(item._id)}
+                        >
+                          <MdOutlineManageHistory size={18} />
+                          <p>Offers</p>
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                )
+              )}
           </div>
         </div>
         <Footer />

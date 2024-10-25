@@ -23,6 +23,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 interface Item {
   _id: string;
@@ -43,6 +44,8 @@ export const MenuDetails: FC = () => {
     slidesToScroll: 2,
     align: "start",
   });
+  const [loading, setloading] = useState<Boolean>(false);
+
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
@@ -50,21 +53,27 @@ export const MenuDetails: FC = () => {
 
   const fetchItemDetails = async () => {
     try {
+      setloading(true);
       const res = await axios.get(
         `${API}/api/v1/shop/${shopId}/menu/${menuId}`
       );
       setItem(res.data);
     } catch (error) {
       console.log("Failed to get the item details");
+    } finally {
+      setloading(false);
     }
   };
 
   const fetchItemsofShop = async () => {
     try {
+      setloading(true);
       const res = await axios.get(`${API}/api/v1/shop/${shopId}/menu`);
       setItems(res.data[0].items);
     } catch (error) {
       console.log("Failed to fetch the items of shop");
+    } finally {
+      setloading(false);
     }
   };
 
@@ -199,56 +208,62 @@ export const MenuDetails: FC = () => {
 
       {/* Item Card */}
       <div className="my-4">
-        <Card className="pt-2 pb-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={item?.picture}
-                alt={`${item?.itemName}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex flex-col justify-center p-4">
-              <h1 className="font-extrabold text-4xl mb-4">{item?.itemName}</h1>
-              <p className="line-clamp-3">{item?.itemDescription}</p>
-              <div className="flex items-center mt-4 space-x-4">
-                <p className="text-lg font-bold">&#8377;{item?.price}</p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      handleUpdateMainQuantity(parseInt(mainQuantity) - 1)
-                    }
-                  >
-                    <FaMinus className="h-4 w-4" />
-                  </Button>
-                  <Input
-                    type="text"
-                    value={mainQuantity}
-                    onChange={(e) => handleMainQuantityChange(e.target.value)}
-                    onBlur={handleMainQuantityBlur}
-                    className="w-16 text-center"
-                  />
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() =>
-                      handleUpdateMainQuantity(parseInt(mainQuantity) + 1)
-                    }
-                  >
-                    <FaPlus className="h-4 w-4" />
-                  </Button>
+        {loading ? (
+          <SkeletonGrid count={1} />
+        ) : (
+          <Card className="pt-2 pb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={item?.picture}
+                  alt={`${item?.itemName}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col justify-center p-4">
+                <h1 className="font-extrabold text-4xl mb-4">
+                  {item?.itemName}
+                </h1>
+                <p className="line-clamp-3">{item?.itemDescription}</p>
+                <div className="flex items-center mt-4 space-x-4">
+                  <p className="text-lg font-bold">&#8377;{item?.price}</p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() =>
+                        handleUpdateMainQuantity(parseInt(mainQuantity) - 1)
+                      }
+                    >
+                      <FaMinus className="h-4 w-4" />
+                    </Button>
+                    <Input
+                      type="text"
+                      value={mainQuantity}
+                      onChange={(e) => handleMainQuantityChange(e.target.value)}
+                      onBlur={handleMainQuantityBlur}
+                      className="w-16 text-center"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() =>
+                        handleUpdateMainQuantity(parseInt(mainQuantity) + 1)
+                      }
+                    >
+                      <FaPlus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex justify-start mt-4">
+                  <Button onClick={handleAddToCart}>Add to Cart</Button>
                 </div>
               </div>
-              <div className="flex justify-start mt-4">
-                <Button onClick={handleAddToCart}>Add to Cart</Button>
-              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        )}
       </div>
 
       {/* Other Items Carousel */}
@@ -264,86 +279,90 @@ export const MenuDetails: FC = () => {
       >
         <Carousel ref={emblaRef} className="w-full">
           <CarouselContent className="-ml-2 md:-ml-4">
-            {items.map((item) => (
-              <CarouselItem
-                key={item?._id}
-                className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2"
-              >
-                <Card className="cursor-pointer w-full h-full flex flex-col">
-                  <div
-                    className="aspect-[4/3] overflow-hidden"
-                    onClick={() => handleItemClickOnCarousel(item._id)}
-                  >
-                    <img
-                      src={item?.picture}
-                      alt={item?.itemName}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <CardHeader className="flex-none">
-                    <CardTitle className="text-xl line-clamp-1">
-                      {item?.itemName}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-sm line-clamp-2">
-                      {item?.itemDescription}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="flex-none flex justify-between items-center flex-wrap gap-2">
-                    <p className="font-bold">&#8377;{item?.price}</p>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateQuantity(
-                            item._id,
-                            parseInt(quantities[item._id] || "1") - 1
-                          );
-                        }}
-                      >
-                        <FaMinus className="h-4 w-4" />
-                      </Button>
-                      <Input
-                        type="text"
-                        value={quantities[item._id] || "1"}
-                        onChange={(e) =>
-                          handleQuantityChange(item._id, e.target.value)
-                        }
-                        onBlur={() => handleQuantityBlur(item._id)}
-                        className="w-16 text-center"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdateQuantity(
-                            item._id,
-                            parseInt(quantities[item._id] || "1") + 1
-                          );
-                        }}
-                      >
-                        <FaPlus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddCarouselItemToCart(item);
-                      }}
+            {items.map((item) =>
+              loading ? (
+                <SkeletonGrid count={1} />
+              ) : (
+                <CarouselItem
+                  key={item?._id}
+                  className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2"
+                >
+                  <Card className="cursor-pointer w-full h-full flex flex-col">
+                    <div
+                      className="aspect-[4/3] overflow-hidden"
+                      onClick={() => handleItemClickOnCarousel(item._id)}
                     >
-                      Add to Cart
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </CarouselItem>
-            ))}
+                      <img
+                        src={item?.picture}
+                        alt={item?.itemName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <CardHeader className="flex-none">
+                      <CardTitle className="text-xl line-clamp-1">
+                        {item?.itemName}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                      <p className="text-sm line-clamp-2">
+                        {item?.itemDescription}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="flex-none flex justify-between items-center flex-wrap gap-2">
+                      <p className="font-bold">&#8377;{item?.price}</p>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleUpdateQuantity(
+                              item._id,
+                              parseInt(quantities[item._id] || "1") - 1
+                            );
+                          }}
+                        >
+                          <FaMinus className="h-4 w-4" />
+                        </Button>
+                        <Input
+                          type="text"
+                          value={quantities[item._id] || "1"}
+                          onChange={(e) =>
+                            handleQuantityChange(item._id, e.target.value)
+                          }
+                          onBlur={() => handleQuantityBlur(item._id)}
+                          className="w-16 text-center"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleUpdateQuantity(
+                              item._id,
+                              parseInt(quantities[item._id] || "1") + 1
+                            );
+                          }}
+                        >
+                          <FaPlus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddCarouselItemToCart(item);
+                        }}
+                      >
+                        Add to Cart
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </CarouselItem>
+              )
+            )}
           </CarouselContent>
           {items.length > 2 ? (
             <>

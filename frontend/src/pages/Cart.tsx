@@ -13,6 +13,7 @@ import axios from "axios";
 import { API } from "@/utils/api";
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 declare global {
   interface Window {
@@ -406,7 +407,9 @@ export const Cart = () => {
                           item.offerId?.includes(offer._id)
                         );
 
-                        return (
+                        return isLoadingOffers ? (
+                          <SkeletonGrid count={1} />
+                        ) : (
                           <Card key={offer._id} className="p-4 bg-green-200">
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem
