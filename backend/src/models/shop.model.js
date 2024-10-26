@@ -10,7 +10,6 @@ const shopSchema = new Schema(
     },
     email: {
       type: String,
-      unique: true,
       required: [true, "Make sure to add the shop details."],
     },
     address: {
@@ -21,7 +20,6 @@ const shopSchema = new Schema(
     contactNo: {
       type: String,
       required: [true, "Make to add the contact number"],
-      unique: true,
     },
 
     // required true
