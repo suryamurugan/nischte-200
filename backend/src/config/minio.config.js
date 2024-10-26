@@ -4,10 +4,10 @@ const minioClient = new Minio.Client({
   endPoint: "22.0.0.179",
   port: 9000,
   useSSL: false,
-  accessKey: "zdUNw0ojDofdgwLRs8eR",
-  secretKey: "PtkP3Syt0e2BFlNkQgqe0yLHWpEIe7EeVKo87x4z",
+  accessKey: process.env.MINIO_ACCESS_KEY,
+  secretKey: process.env.MINIO_SECRET_KEY,
 });
 
-const bucketName = "nischte";
+const bucketName = process.env.MINIO_BUCKET;
 
 export { minioClient, bucketName };

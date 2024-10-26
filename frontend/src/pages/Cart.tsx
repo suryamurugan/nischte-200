@@ -327,7 +327,6 @@ export const Cart = () => {
           <div className="flex-grow space-y-8">
             {/* Cart Items */}
             <div className="space-y-4">
-              <h2 className="text-xl font-bold">Items</h2>
               {state.items.map((item) => (
                 <Card key={item._id} className="p-4">
                   <div className="flex items-start gap-4">
@@ -475,7 +474,7 @@ export const Cart = () => {
                       </div>
                     </div>
                     {priceDetails.appliedOffer && (
-                      <div className="text-xs text-green-600 ml-4">
+                      <div className="text-xs text-green-600">
                         {priceDetails.appliedOffer.offerDescription.description}
                       </div>
                     )}

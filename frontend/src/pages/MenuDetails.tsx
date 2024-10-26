@@ -211,13 +211,13 @@ export const MenuDetails: FC = () => {
         {loading ? (
           <SkeletonGrid count={1} />
         ) : (
-          <Card className="pt-2 pb-2">
+          <Card>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="aspect-[4/3] overflow-hidden">
                 <img
                   src={item?.picture}
                   alt={`${item?.itemName}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-tl-md rounded-bl-md"
                 />
               </div>
               <div className="flex flex-col justify-center p-4">
@@ -295,7 +295,7 @@ export const MenuDetails: FC = () => {
                       <img
                         src={item?.picture}
                         alt={item?.itemName}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-tl-md rounded-tr-md"
                       />
                     </div>
                     <CardHeader className="flex-none">

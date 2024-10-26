@@ -23,6 +23,7 @@ export const createShop = async (req, res) => {
       shop: savedShop,
     });
   } catch (error) {
+    console.error("Error creating shop:", error);
     res.status(500).json({
       message: "Failed to create shop",
       error: error.message,

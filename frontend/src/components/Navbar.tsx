@@ -129,13 +129,13 @@ export const Navbar: React.FC = () => {
                 >
                   About us
                 </Link>
-                <Link
+                {/* <Link
                   to="/contact-us"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   Contact us
-                </Link>
+                </Link> */}
                 <Link
                   to={`/support/${userId}`}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
