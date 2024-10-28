@@ -1,10 +1,12 @@
 export interface Item {
+  shopId: any;
   _id: string;
   itemName: string;
   itemDescription: string;
   picture: string;
   offerId?: string;
   price: number;
+  item: string;
 }
 
 export interface CartItem extends Item {

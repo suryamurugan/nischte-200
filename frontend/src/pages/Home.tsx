@@ -33,9 +33,8 @@ interface Item {
   _id: string;
   itemName: string;
   itemDescription: string;
-  picture: string;
-  offerId?: string;
   price: number;
+  picture: string;
   shopId: string;
 }
 
@@ -112,7 +111,10 @@ export const Home = () => {
   const handleAddToCart = (item: Item) => {
     const quantity = parseInt(quantities[item._id] || "1");
     for (let i = 0; i < quantity; i++) {
-      dispatch({ type: "ADD_TO_CART", payload: item });
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: { ...item, item: item.itemName },
+      });
     }
 
     toast.success(`${quantity} x ${item.itemName} added to your cart`, {

@@ -41,7 +41,7 @@ export const RegisterShop: FC = () => {
     }
 
     try {
-      const response = await axios.post(`${API}/api/v1/shop`, formData, {
+      await axios.post(`${API}/api/v1/shop`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Shop registered successfully!");

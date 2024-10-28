@@ -26,6 +26,7 @@ interface Item {
   offerId?: string;
   price: number;
   shopId: string;
+  item: string;
 }
 
 interface PaginationMetadata {

@@ -18,7 +18,15 @@ export const cartReducer = (
             : item
         );
       } else {
-        newItems = [...state.items, { ...action.payload, quantity: 1 }];
+        newItems = [
+          ...state.items,
+          {
+            ...action.payload,
+            quantity: 1,
+            shopId: action.payload.shopId,
+            item: action.payload.item,
+          },
+        ];
       }
 
       const newTotal = newItems.reduce(
