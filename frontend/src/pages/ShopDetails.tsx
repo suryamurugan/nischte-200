@@ -186,7 +186,12 @@ export const ShopDetails: FC = () => {
     for (let i = 0; i < quantity; i++) {
       dispatch({
         type: "ADD_TO_CART",
-        payload: { ...item, price: parseFloat(item.price) },
+        payload: {
+          ...item,
+          price: parseFloat(item.price),
+          shopId: shopId || "",
+          item: item.itemName,
+        },
       });
     }
 

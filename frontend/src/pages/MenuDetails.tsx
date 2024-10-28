@@ -144,7 +144,10 @@ export const MenuDetails: FC = () => {
     if (item) {
       const quantity = parseInt(mainQuantity);
       for (let i = 0; i < quantity; i++) {
-        dispatch({ type: "ADD_TO_CART", payload: item });
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: { ...item, shopId, item: item?._id || "" },
+        });
       }
 
       toast.success(`${quantity} x ${item.itemName} added to your cart`, {
@@ -156,7 +159,10 @@ export const MenuDetails: FC = () => {
   const handleAddCarouselItemToCart = (carouselItem: Item) => {
     const quantity = parseInt(quantities[carouselItem._id] || "1");
     for (let i = 0; i < quantity; i++) {
-      dispatch({ type: "ADD_TO_CART", payload: carouselItem });
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: { ...carouselItem, shopId, item: item?._id || "" },
+      });
     }
 
     toast.success(`${quantity} x ${carouselItem.itemName} added to your cart`, {

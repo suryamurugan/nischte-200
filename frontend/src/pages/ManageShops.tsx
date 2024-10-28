@@ -5,15 +5,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { API } from "@/utils/api";
-import { Skeleton } from "@/components/ui/skeleton";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 interface Shop {
