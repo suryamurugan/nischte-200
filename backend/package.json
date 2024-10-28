@@ -1,0 +1,32 @@
+{
+  "name": "nischte",
+  "version": "1.0.0",
+  "description": "Backend for Nischte",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "Nischte"
+  ],
+  "author": "Ashish",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "json-rule-engine": "^0.0.3",
+    "json-rules-engine": "^6.5.0",
+    "minio": "^8.0.1",
+    "mongoose": "^8.7.1",
+    "multer": "^1.4.5-lts.1",
+    "razorpay": "^2.9.5"
+  }
+}
