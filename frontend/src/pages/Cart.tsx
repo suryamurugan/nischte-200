@@ -12,7 +12,6 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import axios from "axios";
 import { API } from "@/utils/api";
 import { useUser } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
 
 declare global {
@@ -25,11 +24,9 @@ export const Cart = () => {
   const { user } = useUser();
   const userId = user?.id;
 
-  const navigate = useNavigate();
-
   const { state, dispatch } = useCart();
   const [quantities, setQuantities] = useState<{ [key: string]: string }>({});
-  const [applicableOffers, setApplicableOffers] = useState([]);
+  const [_, setApplicableOffers] = useState([]);
   const [offerDetails, setOfferDetails] = useState([]);
   const [selectedOffers, setSelectedOffers] = useState<{
     [key: string]: string;

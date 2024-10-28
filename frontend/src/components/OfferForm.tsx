@@ -71,18 +71,18 @@ const OfferForm: React.FC<OfferFormProps> = ({
     setErrors({});
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    fields.forEach((field) => {
-      if (isUpdate && field.name === "offerType.name") return;
+  // const validateForm = (): boolean => {
+  //   const newErrors: Record<string, string> = {};
+  //   fields.forEach((field) => {
+  //     if (isUpdate && field.name === "offerType.name") return;
 
-      if (field.type !== "checkbox" && !formData[field.name]) {
-        newErrors[field.name] = `${field.label} is required`;
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  //     if (field.type !== "checkbox" && !formData[field.name]) {
+  //       newErrors[field.name] = `${field.label} is required`;
+  //     }
+  //   });
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

@@ -7,7 +7,7 @@ import React, {
   Dispatch,
 } from "react";
 
-import { cartReducer } from "@/reducer/Cartreducer";
+import { cartReducer } from "@/reducer/CartReducer";
 
 const CartContext = createContext<
   | {
