@@ -63,7 +63,10 @@ export const Navbar: React.FC = () => {
               {!isSignedIn && (
                 <Button className="ghost">
                   <SignedOut>
-                    <SignInButton />
+                    <SignInButton
+                      fallbackRedirectUrl="/"
+                      signUpFallbackRedirectUrl="/"
+                    />
                   </SignedOut>
                 </Button>
               )}

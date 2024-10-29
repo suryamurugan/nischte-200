@@ -17,7 +17,7 @@ export const uploadFile = async (file) => {
   }
 
   await minioClient.fPutObject(bucketName, objectName, file.path);
-  const pictureUrl = `http://${process.env.MINIO_ENDPOINT}:9000/${bucketName}/${objectName}`;
+  const pictureUrl = `https://s3-public.cialabs.org/${bucketName}/${objectName}`;
 
   await unlinkFile(file.path);
 
