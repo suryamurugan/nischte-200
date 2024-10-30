@@ -35,6 +35,7 @@ import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
+import { IoMdEye } from "react-icons/io";
 
 interface Shop {
   _id: string;
@@ -238,6 +239,12 @@ export const ShopDetails: FC = () => {
                   </Button>
                 </Link>
 
+                <Link to={`/shop/orders/${shopId}`}>
+                  <Button className="space-x-2 ">
+                    <IoMdEye size={18} /> <p>Orders</p>
+                  </Button>
+                </Link>
+
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" className="space-x-2">
@@ -262,12 +269,6 @@ export const ShopDetails: FC = () => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-
-                <Link to={`/shop/orders/${shopId}`}>
-                  <Button className="space-x-2">
-                    <FaPen size={18} /> <p>Orders</p>
-                  </Button>
-                </Link>
               </div>
             ) : null}
           </nav>
