@@ -89,15 +89,17 @@ export const ManageShops: FC = () => {
             ) : (
               <Card
                 key={shop._id}
-                className="cursor-pointer mb-4 flex"
+                className="cursor-pointer mb-6 flex"
                 onClick={() => handleShopClick(shop._id)}
               >
-                <div className="w-[40%]">
-                  <img
-                    src={shop.picture}
-                    alt={shop.shopName}
-                    className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
-                  />
+                <div className="w-[40%] h-[250px] sm:h-[300px]">
+                  <div className="relative w-full h-full">
+                    <img
+                      src={shop?.picture}
+                      alt={`${shop?.shopName}`}
+                      className="absolute inset-0 w-full h-full object-cover rounded-tl-md rounded-bl-md"
+                    />
+                  </div>
                 </div>
                 <div className="w-[60%]">
                   <CardHeader>
