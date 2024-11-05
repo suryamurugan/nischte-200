@@ -35,6 +35,7 @@ import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
+import { IoMdEye } from "react-icons/io";
 
 interface Shop {
   _id: string;
@@ -238,6 +239,12 @@ export const ShopDetails: FC = () => {
                   </Button>
                 </Link>
 
+                <Link to={`/shop/orders/${shopId}`}>
+                  <Button className="space-x-2 ">
+                    <IoMdEye size={18} /> <p>Orders</p>
+                  </Button>
+                </Link>
+
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" className="space-x-2">
@@ -262,12 +269,6 @@ export const ShopDetails: FC = () => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-
-                <Link to={`/shop/orders/${shopId}`}>
-                  <Button className="space-x-2">
-                    <FaPen size={18} /> <p>Orders</p>
-                  </Button>
-                </Link>
               </div>
             ) : null}
           </nav>
@@ -277,15 +278,17 @@ export const ShopDetails: FC = () => {
             <SkeletonGrid count={1} />
           ) : (
             <Card className="cursor-pointer mb-4 flex">
-              <div className="w-[40%]">
-                {shop && (
-                  <img
-                    src={shop.picture}
-                    alt={shop.shopName}
-                    className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
-                  />
-                )}
-              </div>
+              {shop && (
+                <div className="w-[40%] h-[250px] sm:h-[300px]">
+                  <div className="relative w-full h-full">
+                    <img
+                      src={shop?.picture}
+                      alt={`${shop?.shopName}`}
+                      className="absolute inset-0 w-full h-full object-cover rounded-tl-md rounded-bl-md"
+                    />
+                  </div>
+                </div>
+              )}
               <div className="w-[60%]">
                 <CardHeader>
                   <CardTitle className="text-2xl">{shop?.shopName}</CardTitle>
@@ -328,11 +331,13 @@ export const ShopDetails: FC = () => {
                     className="cursor-pointer w-full"
                     onClick={() => handleItemClick(item._id)}
                   >
-                    <img
-                      src={item?.picture}
-                      alt={item?.itemName}
-                      className="h-48 w-full object-cover rounded-t-md"
-                    />
+                    <div className="w-full h-48 relative">
+                      <img
+                        src={item?.picture}
+                        alt={item?.itemName}
+                        className="absolute inset-0 w-full h-full object-cover rounded-tl-md rounded-tr-md"
+                      />
+                    </div>
                     <CardHeader className="flex-row justify-between items-center">
                       <CardTitle className="text-2xl ">
                         {item?.itemName}
