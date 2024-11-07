@@ -81,7 +81,6 @@ export const getAllOffers = async (req, res) => {
     const offers = await Offer.find({
       shopId,
       itemId,
-      "offers._isActive": true,
     });
     res.status(200).json({
       message: "Offers retrieved successfully",

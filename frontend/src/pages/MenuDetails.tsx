@@ -219,12 +219,14 @@ export const MenuDetails: FC = () => {
         ) : (
           <Card>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={item?.picture}
-                  alt={`${item?.itemName}`}
-                  className="w-full h-full object-cover rounded-tl-md rounded-bl-md"
-                />
+              <div className="w-full h-[300px]">
+                <div className="relative w-full h-full">
+                  <img
+                    src={item?.picture}
+                    alt={`${item?.itemName}`}
+                    className="absolute inset-0 w-full h-full object-cover rounded-tl-md rounded-bl-md"
+                  />
+                </div>
               </div>
               <div className="flex flex-col justify-center p-4">
                 <h1 className="font-extrabold text-4xl mb-4">
@@ -295,13 +297,13 @@ export const MenuDetails: FC = () => {
                 >
                   <Card className="cursor-pointer w-full h-full flex flex-col">
                     <div
-                      className="aspect-[4/3] overflow-hidden"
+                      className="w-full h-48 relative"
                       onClick={() => handleItemClickOnCarousel(item._id)}
                     >
                       <img
                         src={item?.picture}
                         alt={item?.itemName}
-                        className="w-full h-full object-cover rounded-tl-md rounded-tr-md"
+                        className="absolute inset-0 w-full h-full object-cover rounded-tl-md rounded-tr-md"
                       />
                     </div>
                     <CardHeader className="flex-none">

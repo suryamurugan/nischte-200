@@ -47,7 +47,7 @@ export const Items = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [quantities, setQuantities] = useState<{ [key: string]: string }>({});
   const [page, setPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(15);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

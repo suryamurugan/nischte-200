@@ -34,7 +34,7 @@ export const Shops: FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [charLimit, setCharLimit] = useState(70);
   const [page, setPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(15);
   const [loading, setLoading] = useState(false);
   const [filteredShops, setFilteredShops] = useState<Shop[]>([]);
   const [total, setTotal] = useState(0);
@@ -151,12 +151,14 @@ export const Shops: FC = () => {
                       className="cursor-pointer mb-4 flex hover:shadow-lg transition-shadow"
                       onClick={() => handleShopDetailsClick(shop._id)}
                     >
-                      <div className="w-[40%]">
-                        <img
-                          src={shop.picture}
-                          alt={shop.shopName}
-                          className="h-full w-full object-cover rounded-tl-md rounded-bl-md"
-                        />
+                      <div className="w-[40%] h-[230px] sm:h-[300px]">
+                        <div className="relative w-full h-full">
+                          <img
+                            src={shop?.picture}
+                            alt={`${shop?.shopName}`}
+                            className="absolute inset-0 w-full h-full object-cover rounded-tl-md rounded-bl-md"
+                          />
+                        </div>
                       </div>
                       <div className="w-[60%]">
                         <CardHeader>
