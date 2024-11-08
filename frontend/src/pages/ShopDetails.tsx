@@ -407,12 +407,13 @@ export const ShopDetails: FC = () => {
                       </p>
                     </CardContent>
                     <CardFooter
-                      className="flex justify-between items-center"
+                      className="flex flex-col"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <p className="font-bold">&#8377;{item?.price}</p>
+                      <p className="font-bold flex items-start mb-2">&#8377;{item?.price}</p>
                       {!isManagePage && (
                         <>
+                          <div className="flex items-center gap-2">
                           <div className="flex items-center gap-2">
                             <Button
                               variant="outline"
@@ -469,6 +470,7 @@ export const ShopDetails: FC = () => {
                             >
                               Add to Cart
                             </Button>
+                          </div>
                           </div>
                         </>
                       )}
