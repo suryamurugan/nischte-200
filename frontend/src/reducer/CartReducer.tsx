@@ -82,6 +82,19 @@ export const cartReducer = (
         items: action.payload,
         total,
       };
+      
+    case "CLEAR_ITEM": 
+      const newItems = state.items.filter((item)  => item._id !== action.payload);
+      const newTotal = newItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+
+      return {
+        items: newItems,
+        total: newTotal,
+      };
+      
 
     default:
       return state;
