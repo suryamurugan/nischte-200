@@ -407,7 +407,7 @@ export const ShopDetails: FC = () => {
                       </p>
                     </CardContent>
                     <CardFooter
-                      className="flex flex-col"
+                      className={`flex flex-col ${isManagePage ? 'flex-row justify-between items-center' : ''}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <p className="font-bold flex items-start mb-2">&#8377;{item?.price}</p>
