@@ -17,7 +17,10 @@ export const ItemFields = [
     name: "price",
     label: "Price",
     type: "number",
-    validation: z.string().transform((val) => parseFloat(val)),
+    validation: z
+      .number()
+      .min(0, { message: "Price must be a valid number and non-negative" })
+      .transform((value) => Number(value.toFixed(2))),
   },
   {
     name: "picture",
