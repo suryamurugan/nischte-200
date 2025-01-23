@@ -100,10 +100,17 @@ export const getShop = async (req, res) => {
 export const updateShop = async (req, res) => {
   try {
     const shopId = req.params.id;
+    // console.log("body", req.body)
+    const updateData = { ...req.body};
+    if ( req.file ) {
+      // console.log("file check", req.file)
+      const pictureUrl = await uploadFile(req.file);
+      updateData.picture = pictureUrl;
+    }
     const updatedShop = await Shop.findByIdAndUpdate(
       shopId,
       {
-        $set: req.body,
+        $set: updateData,
       },
       {
         new: true,
