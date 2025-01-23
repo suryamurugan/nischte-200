@@ -13,6 +13,7 @@ import axios from "axios";
 import { API } from "@/utils/api";
 import { useUser } from "@clerk/clerk-react";
 import { SkeletonGrid } from "@/components/SkeletonGrid";
+import { ImCancelCircle } from "react-icons/im";  
 
 declare global {
   interface Window {
@@ -310,6 +311,13 @@ export const Cart = () => {
     }
   };
 
+  const handleItemCancel = (itemId: string) => {
+    dispatch({
+      type: "CLEAR_ITEM",
+      payload: itemId
+    })
+  }
+
   useEffect(() => {
     fetchOfferDetails();
   }, [state.items]);
@@ -333,7 +341,10 @@ export const Cart = () => {
                       className="w-20 h-20 object-cover rounded"
                     />
                     <div className="flex-grow">
-                      <h3 className="font-bold">{item.itemName}</h3>
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-bold">{item.itemName}</h3>
+                        <ImCancelCircle onClick={() => handleItemCancel(item._id)}/>
+                      </div>
                       <p className="text-lg">₹{item.price}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Button
@@ -374,7 +385,7 @@ export const Cart = () => {
             {/* Offers Section */}
             {offerDetails.length > 0 && (
               <div className="space-y-4 ">
-                <h2 className="text-xl font-bold">Available Offers</h2>
+                <h2 className="text-2xl font-bold mb-4">Available Offers</h2>
                 <RadioGroup
                   value={Object.values(selectedOffers)[0] || ""}
                   onValueChange={(value) => {
