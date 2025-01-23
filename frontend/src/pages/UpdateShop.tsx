@@ -38,28 +38,32 @@ export const UpdateShop: FC = () => {
     resetForm: () => void
   ) => {
     const ownerId = user?.id;
-
     const formData = new FormData();
 
-    if (ownerId) {
-      formData.append("ownerId", ownerId);
+    if (data.picture instanceof FileList && data.picture.length > 0) {
+      formData.append('picture', data.picture[0]);
     }
 
-    Object.keys(data).forEach((key) => {
-      if (key === "picture" && data[key] instanceof File) {
-        formData.append(key, data[key]);
-      } else {
-        formData.append(key, String(data[key]));
-      }
-    });
+    formData.append('shopName', data.shopName);
+    formData.append('email', data.email);
+    formData.append('address', data.address);
+    formData.append('contactNo', data.contactNo);
+    if (ownerId) {
+      formData.append('ownerId', ownerId);
+    }
 
     try {
-      await axios.patch(`${API}/api/v1/shop/${shopId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await axios.patch(`${API}/api/v1/shop/${shopId}`, formData, {
+        headers: { 
+          'Content-Type': 'multipart/form-data',
+        }
       });
-      toast.success("Shop details updated successfully!");
-      resetForm();
-      navigate(`/shop/manage/${shopId}`);
+
+      if (response.data) {
+        toast.success("Shop details updated successfully!");
+        resetForm();
+        navigate(`/shop/manage/${shopId}`);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
@@ -67,8 +71,10 @@ export const UpdateShop: FC = () => {
             error.response?.data?.message || error.message
           }`
         );
+        console.error('Error response:', error.response);
       } else {
         toast.error("An unexpected error occurred. Please try again.");
+        console.error('Error:', error);
       }
     }
   };
